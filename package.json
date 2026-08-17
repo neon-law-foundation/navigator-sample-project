@@ -2,7 +2,7 @@
   "name": "navigator-sample-project",
   "version": "0.1.0",
   "description": "The reference project application for Navigator: a client portal for the fixture matter Simpson v. Flanders.",
-  "license": "MIT OR Apache-2.0",
+  "license": "AGPL-3.0-or-later",
   "private": true,
   "type": "module",
   "packageManager": "pnpm@11.17.0",
@@ -20,7 +20,7 @@
     "check": "pnpm lint && pnpm typecheck && pnpm build && pnpm test"
   },
   "dependencies": {
-    "@neon-law-foundation/navigator-ux": "^0.7.0",
+    "@neon-law-foundation/navigator-ux": "https://github.com/neon-law-foundation/navigator-ux/releases/download/v0.1.0/navigator-ux-v0.1.0.tgz",
     "react": "^19.2.8",
     "react-dom": "^19.2.8"
   },

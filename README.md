@@ -78,13 +78,12 @@ disagrees with production about where the app lives is a dev loop that hides bas
 | `pnpm test` | vitest. **Needs a build first** — the bundle gate asserts on real output and fails loudly rather than skipping. |
 | `pnpm check` | lint, typecheck, build, test, in that order. |
 
-> **No `pnpm-lock.yaml` yet.** `@neon-law-foundation/navigator-ux` is not published to npm, so there is no
-> registry version to resolve a lockfile against and `pnpm install` cannot succeed from a clean clone. Run
-> `pnpm install` and commit the lockfile as soon as the library ships — `navigator dev sample-project` installs
-> with `--frozen-lockfile` and will not build without one. Until then, a local checkout can install from a
-> `pnpm pack` tarball of the library; pnpm's pre-run dependency check will want an install it cannot do, so run
-> the tools directly (`./node_modules/.bin/tsc --noEmit`, `node node_modules/vite/bin/vite.js build`,
-> `node node_modules/vitest/vitest.mjs run`) or set `verify-deps-before-run=false` in a local `.npmrc`.
+> **The library resolves from a GitHub release, not a registry range.**
+> `@neon-law-foundation/navigator-ux` is not on npm yet, so the dependency is the `v0.1.0` release
+> tarball published by that repository's CI. It needs no token and no `.npmrc` — the release is public —
+> and `pnpm-lock.yaml` pins its `sha512` integrity, so a clean clone resolves the same bytes. Switch to a
+> caret range on the published version once the library reaches npm; nothing else here changes, because
+> the package name is the same either way.
 
 Navigator builds this repository the same way. `navigator dev sample-project` clones it into a temporary
 directory, runs `pnpm install --frozen-lockfile` and `pnpm build`, and stages the resulting `dist/` under
@@ -125,9 +124,11 @@ system through a media query in the library's tokens, so there is nothing for it
 
 ## License
 
-Dual-licensed under [MIT](./LICENSE-MIT) or [Apache-2.0](./LICENSE-APACHE), at your option. See
-[LICENSE.md](./LICENSE.md).
+Licensed under the [GNU Affero General Public License v3.0 or later](./LICENSE). See
+[LICENSE.md](./LICENSE.md), which covers section 13 — deploy a **modified** version for other people to
+use over a network and you owe those users its source — and the third-party terms this grant does not
+reach: `navigator-ux` stays MIT OR Apache-2.0, and the Source Serif 4 faces it bundles stay OFL-1.1.
 
 ```
-SPDX-License-Identifier: MIT OR Apache-2.0
+SPDX-License-Identifier: AGPL-3.0-or-later
 ```
