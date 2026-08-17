@@ -20,7 +20,7 @@
     "check": "pnpm lint && pnpm typecheck && pnpm build && pnpm test"
   },
   "dependencies": {
-    "@neon-law-foundation/navigator-ux": "^0.1.0",
+    "@neon-law-foundation/navigator-ux": "https://github.com/neon-law-foundation/navigator-ux/releases/download/v0.1.0/navigator-ux-v0.1.0.tgz",
     "react": "^19.2.8",
     "react-dom": "^19.2.8"
   },
