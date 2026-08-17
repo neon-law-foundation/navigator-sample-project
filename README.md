@@ -124,9 +124,11 @@ system through a media query in the library's tokens, so there is nothing for it
 
 ## License
 
-Dual-licensed under [MIT](./LICENSE-MIT) or [Apache-2.0](./LICENSE-APACHE), at your option. See
-[LICENSE.md](./LICENSE.md).
+Licensed under the [GNU Affero General Public License v3.0 or later](./LICENSE). See
+[LICENSE.md](./LICENSE.md), which covers section 13 — deploy a **modified** version for other people to
+use over a network and you owe those users its source — and the third-party terms this grant does not
+reach: `navigator-ux` stays MIT OR Apache-2.0, and the Source Serif 4 faces it bundles stay OFL-1.1.
 
 ```
-SPDX-License-Identifier: MIT OR Apache-2.0
+SPDX-License-Identifier: AGPL-3.0-or-later
 ```
