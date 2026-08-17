@@ -18,7 +18,11 @@
     // reads the built document with. `node` is deliberately absent: nothing
     // in this bundle may reach for a Node global, and leaving the types out
     // is what makes that a compile error rather than a code review.
-    "types": ["vitest/globals", "vite/client"]
+    "types": ["vitest/globals", "vite/client"],
+    // Mirrors the Vite alias. Both have to exist: Vite resolves it at build
+    // time, TypeScript resolves it for the editor and `tsc --noEmit`.
+    "baseUrl": ".",
+    "paths": { "@/*": ["src/*"] }
   },
   // `vite.config.ts` is not listed. It is a Node program, and typechecking it
   // here would mean putting `process` and the rest of the Node globals in

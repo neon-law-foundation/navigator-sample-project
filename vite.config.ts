@@ -1,4 +1,6 @@
+import tailwindcss from '@tailwindcss/vite'
 import react from '@vitejs/plugin-react'
+import { fileURLToPath } from 'node:url'
 // vitest/config re-exports defineConfig with the `test` block typed.
 import { defineConfig } from 'vitest/config'
 
@@ -19,7 +21,13 @@ const MOUNT = '/app/projects/simpsons/portal/'
 
 export default defineConfig({
   base: MOUNT,
-  plugins: [react()],
+  plugins: [react(), tailwindcss()],
+  resolve: {
+    // `@/…` for `src/…`, which is the import style every shadcn component
+    // ships with. Keeping it means a component pasted from the registry drops
+    // in unedited.
+    alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) },
+  },
   build: {
     // Hashed asset names are what let Navigator serve every asset
     // `immutable` for a year while `index.html` stays `no-store`. Vite's
