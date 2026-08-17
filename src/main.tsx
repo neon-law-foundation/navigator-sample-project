@@ -1,3 +1,11 @@
+/**
+ * navigator-sample-project — the reference project application for Navigator:
+ * a client portal for the fixture matter Simpson v. Flanders.
+ *
+ * Copyright (c) 2026 Neon Law Foundation.
+ * SPDX-License-Identifier: MIT OR Apache-2.0
+ */
+
 // The library stylesheet, imported exactly once, at the entry. It carries the
 // fonts, the `--nav-*` token contract, and every component rule, and it fetches
 // nothing at runtime — which is what lets it serve under a CSP with no
