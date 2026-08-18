@@ -29,6 +29,11 @@ const scripts = import.meta.glob<string>('../../dist/assets/*.js', {
   eager: true,
 })
 
+// The rendered notation documents. Globbed as URLs rather than raw text: a PDF
+// read as a string proves nothing, and its presence in the emitted tree is the
+// whole assertion.
+const pdfs = import.meta.glob('../../dist/documents/*.pdf', { eager: true })
+
 const bundledJs = Object.values(scripts).join('\n')
 
 /** The built entry document, or a failure naming the command that emits it. */
@@ -69,6 +74,23 @@ describe('the built bundle', () => {
   it('inlines no script, because the portal CSP is `script-src \'self\'`', () => {
     expect(builtDocument()).not.toMatch(/<script(?![^>]*\ssrc=)[^>]*>[^]*?<\/script>/)
     expect(builtDocument()).not.toMatch(/\son[a-z]+="/)
+  })
+
+  it('ships the rendered notation documents', () => {
+    // The portal links to these by path. They are committed artefacts rather
+    // than build output, so nothing in `vite build` would notice them going
+    // missing — this is the check that would.
+    const names = Object.keys(pdfs).map((path) => path.split('/').pop())
+    expect(names, BUILD_FIRST).toContain('notice-of-rescission.pdf')
+    expect(names).toContain('affidavit-lisa-simpson.pdf')
+  })
+
+  it('loads no stylesheet or script from a CDN', () => {
+    // Tailwind and every component are compiled into the hashed assets above.
+    // A `cdn.tailwindcss.com` tag would work on a dev server and be blocked in
+    // production, which is the failure this asserts against.
+    expect(builtDocument()).not.toMatch(/cdn\./)
+    expect(bundledJs).not.toMatch(/https?:\/\/cdn\./)
   })
 
   it('references nothing off-origin', () => {

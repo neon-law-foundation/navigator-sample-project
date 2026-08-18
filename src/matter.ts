@@ -1,4 +1,4 @@
-import type { ActionItem, StatusCellProps } from '@neon-law-foundation/navigator-ux'
+import type { ActionItem, StatusCell } from './types'
 
 /**
  * The matter this portal renders — fixture data, and nothing else.
@@ -8,10 +8,10 @@ import type { ActionItem, StatusCellProps } from '@neon-law-foundation/navigator
  * the claim, and the jurisdiction below match that seed exactly: a sample that
  * disagrees with the fixture it is served beside teaches the wrong thing.
  *
- * Data lives here rather than inside a component on purpose. Every themed
- * component in `navigator-ux` takes its data as props and imports no
- * application module, so the seam between "what this matter says" and "how a
- * matter looks" is a file boundary you can see. A real portal replaces this
+ * Data lives here rather than inside a component on purpose. Every component
+ * in `src/components/ui` takes its data as props and imports no application
+ * module, so the seam between "what this matter says" and "how a matter looks"
+ * is a file boundary you can see. A real portal replaces this
  * module with a same-origin read against Navigator's `/app/api`; the
  * components above it do not change.
  */
@@ -25,7 +25,7 @@ export const MATTER = {
 } as const
 
 /** The strip under the case head: four facts a client should not have to hunt for. */
-export const MATTER_FACTS: StatusCellProps[] = [
+export const MATTER_FACTS: StatusCell[] = [
   { label: 'Matter', value: MATTER.caption },
   { label: 'Claim', value: MATTER.claim },
   { label: 'Jurisdiction', value: MATTER.jurisdiction },

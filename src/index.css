@@ -1,0 +1,203 @@
+@import 'tailwindcss';
+
+/*
+ * The portal's own theme.
+ *
+ * shadcn's convention: semantic CSS variables (`--background`, `--primary`,
+ * `--muted-foreground`) defined once for light and re-defined for dark, with
+ * every component styled against the semantic name rather than a color. That
+ * indirection is the whole point — a rebrand is this file, not a sweep through
+ * the components.
+ *
+ * The accent is teal, carried through primary, ring, and chart-1 so the brand
+ * shows up in buttons, focus rings, and the relationship graph without any of
+ * them naming a color.
+ */
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+  --radius: 0.5rem;
+
+  --background: oklch(0.995 0.002 180);
+  --foreground: oklch(0.21 0.02 200);
+
+  --card: oklch(1 0 0);
+  --card-foreground: var(--foreground);
+  --popover: oklch(1 0 0);
+  --popover-foreground: var(--foreground);
+
+  /* Teal 700 — dark enough to carry white text at AA on small type. */
+  --primary: oklch(0.52 0.09 195);
+  --primary-foreground: oklch(0.99 0.005 180);
+
+  --secondary: oklch(0.96 0.012 190);
+  --secondary-foreground: oklch(0.28 0.03 200);
+
+  --muted: oklch(0.965 0.008 190);
+  --muted-foreground: oklch(0.52 0.02 205);
+
+  --accent: oklch(0.94 0.03 190);
+  --accent-foreground: oklch(0.28 0.04 200);
+
+  --destructive: oklch(0.55 0.19 27);
+  --destructive-foreground: oklch(0.99 0.005 180);
+
+  --warning: oklch(0.72 0.14 75);
+  --warning-foreground: oklch(0.26 0.05 70);
+
+  --success: oklch(0.55 0.11 155);
+  --success-foreground: oklch(0.99 0.005 180);
+
+  --border: oklch(0.9 0.012 195);
+  --input: oklch(0.9 0.012 195);
+  --ring: oklch(0.52 0.09 195);
+
+  /* Graph series. Ordered so adjacent node kinds never share a hue family. */
+  --chart-1: oklch(0.52 0.09 195);
+  --chart-2: oklch(0.55 0.19 27);
+  --chart-3: oklch(0.72 0.14 75);
+  --chart-4: oklch(0.55 0.11 155);
+  --chart-5: oklch(0.55 0.13 265);
+}
+
+.dark {
+  --background: oklch(0.19 0.015 210);
+  --foreground: oklch(0.95 0.008 190);
+
+  --card: oklch(0.23 0.018 208);
+  --card-foreground: var(--foreground);
+  --popover: oklch(0.23 0.018 208);
+  --popover-foreground: var(--foreground);
+
+  /* Lifted for dark: the light-mode teal fails contrast on a dark ground. */
+  --primary: oklch(0.74 0.11 190);
+  --primary-foreground: oklch(0.19 0.03 205);
+
+  --secondary: oklch(0.28 0.022 205);
+  --secondary-foreground: oklch(0.95 0.008 190);
+
+  --muted: oklch(0.27 0.02 205);
+  --muted-foreground: oklch(0.71 0.02 195);
+
+  --accent: oklch(0.32 0.035 195);
+  --accent-foreground: oklch(0.95 0.008 190);
+
+  --destructive: oklch(0.66 0.17 25);
+  --destructive-foreground: oklch(0.17 0.03 25);
+
+  --warning: oklch(0.79 0.13 78);
+  --warning-foreground: oklch(0.22 0.04 70);
+
+  --success: oklch(0.7 0.12 158);
+  --success-foreground: oklch(0.18 0.03 158);
+
+  --border: oklch(0.32 0.02 205);
+  --input: oklch(0.34 0.02 205);
+  --ring: oklch(0.74 0.11 190);
+
+  --chart-1: oklch(0.74 0.11 190);
+  --chart-2: oklch(0.66 0.17 25);
+  --chart-3: oklch(0.79 0.13 78);
+  --chart-4: oklch(0.7 0.12 158);
+  --chart-5: oklch(0.7 0.12 265);
+}
+
+/* Expose the variables to Tailwind as `bg-card`, `text-muted-foreground`, etc. */
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+
+  --font-serif: 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, serif;
+}
+
+/*
+ * Dark mode follows the operating system.
+ *
+ * This block is deliberately **outside** `@layer base`. Unlayered declarations
+ * win over layered ones regardless of specificity, and the `:root` light
+ * palette above is unlayered — so a copy of this inside `@layer base` loses to
+ * it and dark mode silently never applies. The two have to sit in the same
+ * layer for the later one to win.
+ *
+ * `:not(.light)` leaves room for an explicit override, and `.dark` above is the
+ * matching hook for a future toggle. Neither needs JavaScript today, which is
+ * what avoids a flash of the wrong palette before hydration.
+ */
+@media (prefers-color-scheme: dark) {
+  :root:not(.light) {
+    color-scheme: dark;
+
+    --background: oklch(0.19 0.015 210);
+    --foreground: oklch(0.95 0.008 190);
+    --card: oklch(0.23 0.018 208);
+    --card-foreground: oklch(0.95 0.008 190);
+    --popover: oklch(0.23 0.018 208);
+    --popover-foreground: oklch(0.95 0.008 190);
+    --primary: oklch(0.74 0.11 190);
+    --primary-foreground: oklch(0.19 0.03 205);
+    --secondary: oklch(0.28 0.022 205);
+    --secondary-foreground: oklch(0.95 0.008 190);
+    --muted: oklch(0.27 0.02 205);
+    --muted-foreground: oklch(0.71 0.02 195);
+    --accent: oklch(0.32 0.035 195);
+    --accent-foreground: oklch(0.95 0.008 190);
+    --destructive: oklch(0.66 0.17 25);
+    --destructive-foreground: oklch(0.17 0.03 25);
+    --warning: oklch(0.79 0.13 78);
+    --warning-foreground: oklch(0.22 0.04 70);
+    --success: oklch(0.7 0.12 158);
+    --success-foreground: oklch(0.18 0.03 158);
+    --border: oklch(0.32 0.02 205);
+    --input: oklch(0.34 0.02 205);
+    --ring: oklch(0.74 0.11 190);
+    --chart-1: oklch(0.74 0.11 190);
+    --chart-2: oklch(0.66 0.17 25);
+    --chart-3: oklch(0.79 0.13 78);
+    --chart-4: oklch(0.7 0.12 158);
+    --chart-5: oklch(0.7 0.12 265);
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-synthesis-weight: none;
+    text-rendering: optimizeLegibility;
+  }
+}

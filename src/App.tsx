@@ -1,126 +1,276 @@
-import {
-  ActionList,
-  Callout,
-  CaseHead,
-  CaseNav,
-  ExternalLink,
-  Layout,
-  LegalDisclaimer,
-  NavigatorFooter,
-  Panel,
-  Shell,
-  Stack,
-  StatusStrip,
-} from '@neon-law-foundation/navigator-ux'
+import { ArrowRight, ExternalLink } from 'lucide-react'
+import { useEffect, useState } from 'react'
 
+import { IntroductionPage } from './IntroductionPage'
 import { MATTER, MATTER_FACTS, NEXT_STEPS } from './matter'
 import { portalPath } from './mount'
+import { READY_KICKER } from './ready'
+import { SOUL_CLAIM } from './soulContract'
+
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { cn } from '@/lib/utils'
 
 /**
- * The portal, composed entirely from `navigator-ux`.
+ * The portal.
  *
- * There is no stylesheet in this repository. Every surface below is a library
- * component reading the `--nav-*` token contract, which is what keeps this
- * bundle looking like the Navigator page that linked to it — and what means a
- * brand change is a token file somewhere else rather than an edit here. If a
- * layout need arises that the library cannot express, the fix belongs in the
- * library, not in a local override that only this app benefits from.
+ * Built on shadcn-style components in `src/components/ui/` — Radix primitives
+ * for the behavior, Tailwind for the styling, and a single teal theme in
+ * `index.css` that every component reads through semantic variables. Nothing
+ * here names a color, so a rebrand is that one file.
  *
- * The matter surfaces (`CaseNav`, `Shell`, `CaseHead`, `Layout`, `Panel`) are
- * the right family here rather than the public marketing shell: this is an
- * authenticated matter workspace, not a landing page.
+ * The components live in this repository rather than arriving from a package,
+ * which is what shadcn is: you own the source, so a component that needs to
+ * behave differently gets edited instead of wrapped.
  */
+
+type View = 'overview' | 'introduction'
+
+/**
+ * Routing by fragment, deliberately.
+ *
+ * A path-based route would need Navigator to serve `index.html` for every
+ * sub-path under the mount, and it does not promise that — a deep link to
+ * `…/portal/introduction` would 404 on a real deployment even though it works
+ * under the dev server, which is the worst possible place to find out. A
+ * fragment is never sent to the origin, so every view is a bookmarkable URL
+ * that cannot 404, at the cost of a `#` a reader will not notice.
+ */
+function viewFromHash(): View {
+  return window.location.hash === '#introduction' ? 'introduction' : 'overview'
+}
+
 export function App() {
+  const [view, setView] = useState<View>(viewFromHash)
+
+  useEffect(() => {
+    const sync = () => setView(viewFromHash())
+    window.addEventListener('hashchange', sync)
+    return () => window.removeEventListener('hashchange', sync)
+  }, [])
+
   return (
-    // `nav-theme` carries the library's ground, ink, and link colors for the
-    // whole document. `Shell` renders the <main> inside it.
-    <div className="nav-theme">
-      <CaseNav
-        brand="NAVIGATOR · CLIENT PORTAL"
-        caption={`${MATTER.caption} — ${MATTER.claim.toLowerCase()}`}
-        links={[
-          // Derived from the mount: this is a path inside the bundle.
-          { label: 'Overview', href: portalPath(''), current: true },
-          // Absolute on purpose: Navigator's own matter list, not a path in
-          // this bundle. It is stable across every deployment because it is
-          // Navigator's route, not ours.
-          { label: 'Your matters', href: '/app/projects' },
-        ]}
-      />
+    <div className="min-h-dvh bg-background">
+      <TopNav view={view} />
 
-      <Shell>
-        <CaseHead
-          // The mount contract. This element is rendered by React, so it
-          // exists only once the app has mounted — which is exactly what
-          // Navigator's browser walkthrough is asking about when it waits for
-          // `#simpsons-portal-ready`. A static marker in `index.html` would
-          // report "ready" for a bundle that failed to boot.
-          kicker={<span id="simpsons-portal-ready">Client portal · live</span>}
-          title={MATTER.caption}
-          docket={`${MATTER.claim} · ${MATTER.jurisdiction} · Fixture matter`}
-          summary="Your matter workspace: where things stand, what happens next, and how to reach the people working on it."
-        >
-          <StatusStrip cells={MATTER_FACTS} />
-        </CaseHead>
+      <main className="mx-auto w-full max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+        {view === 'introduction' ? <IntroductionPage /> : <Overview />}
+      </main>
 
-        <Layout>
-          <Stack>
-            <Panel title="Where things stand">
+      <footer className="border-t bg-muted/40">
+        <div className="mx-auto flex w-full max-w-7xl flex-wrap items-center justify-between gap-2 px-4 py-6 text-xs text-muted-foreground sm:px-6 lg:px-8">
+          <span>Fixture data only — {MATTER.caption} is a simulated matter.</span>
+          <span className="font-mono">Navigator · client portal</span>
+        </div>
+      </footer>
+    </div>
+  )
+}
+
+function TopNav({ view }: { view: View }) {
+  const links: { label: string; href: string; current: boolean }[] = [
+    { label: 'Overview', href: portalPath(''), current: view === 'overview' },
+    {
+      label: SOUL_CLAIM.count,
+      href: portalPath('#introduction'),
+      current: view === 'introduction',
+    },
+  ]
+
+  return (
+    <header className="sticky top-0 z-30 border-b bg-background/85 backdrop-blur supports-[backdrop-filter]:bg-background/70">
+      <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-1 py-3">
+          <span className="font-mono text-[0.7rem] font-semibold uppercase tracking-[0.16em] text-primary">
+            Navigator · Client Portal
+          </span>
+          <span className="text-sm text-muted-foreground">
+            {MATTER.caption} — {MATTER.claim.toLowerCase()}
+          </span>
+        </div>
+        <nav aria-label="Portal sections" className="-mb-px flex gap-6">
+          {links.map((link) => (
+            <a
+              key={link.label}
+              href={link.href}
+              aria-current={link.current ? 'page' : undefined}
+              className={cn(
+                'border-b-2 px-0.5 pb-2.5 text-sm font-medium transition-colors',
+                link.current
+                  ? 'border-primary text-foreground'
+                  : 'border-transparent text-muted-foreground hover:border-border hover:text-foreground',
+              )}
+            >
+              {link.label}
+            </a>
+          ))}
+        </nav>
+      </div>
+    </header>
+  )
+}
+
+function Overview() {
+  return (
+    <div className="space-y-8">
+      <header className="space-y-4">
+        <p className="text-xs font-semibold uppercase tracking-[0.14em] text-primary">
+          {READY_KICKER}
+        </p>
+        <div className="space-y-2">
+          <h1 className="font-serif text-4xl font-bold tracking-tight sm:text-5xl">
+            {MATTER.caption}
+          </h1>
+          <p className="font-mono text-xs uppercase tracking-wide text-muted-foreground">
+            {MATTER.claim} · {MATTER.jurisdiction} · Fixture matter
+          </p>
+        </div>
+        <p className="max-w-3xl text-lg leading-relaxed text-muted-foreground">
+          Your matter workspace: where things stand, what happens next, and how to reach the people
+          working on it.
+        </p>
+
+        <dl className="grid grid-cols-2 gap-px overflow-hidden rounded-xl border bg-border lg:grid-cols-4">
+          {MATTER_FACTS.map((fact) => (
+            <div key={String(fact.label)} className="bg-card px-4 py-3">
+              <dt className="text-[0.7rem] font-semibold uppercase tracking-wide text-muted-foreground">
+                {fact.label}
+              </dt>
+              <dd className="mt-0.5 font-serif text-base font-semibold">{fact.value}</dd>
+            </div>
+          ))}
+        </dl>
+      </header>
+
+      <div className="grid gap-6 lg:grid-cols-[minmax(0,1.55fr)_minmax(0,1fr)]">
+        <div className="space-y-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>Where things stand</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4 text-[0.95rem] leading-relaxed">
               <p>
                 This is the client portal application served for your matter, streamed from
-                Navigator&apos;s per-deployment applications bucket. It arrives from Navigator&apos;s
-                own origin, behind your session and the participation list for {MATTER.caption}, so
-                only the people on the matter can reach it.
+                Navigator&apos;s per-deployment applications bucket. It arrives from
+                Navigator&apos;s own origin, behind your session and the participation list for{' '}
+                {MATTER.caption}, so only the people on the matter can reach it.
               </p>
               <p>
-                Nothing on this page is a live record. {MATTER.caption} is a fixture matter, and this
-                bundle is the worked example a contributor reads before attaching a real application
-                to a real one.
+                Nothing on this page is a live record. {MATTER.caption} is a fixture matter, and
+                this bundle is the worked example a contributor reads before attaching a real
+                application to a real one.
               </p>
-            </Panel>
+            </CardContent>
+          </Card>
 
-            <Panel title="Next steps" note="In the order they are useful.">
-              <ActionList items={NEXT_STEPS} />
-            </Panel>
-          </Stack>
-
-          <Stack>
-            <Panel title="About this portal">
+          <Card className="border-l-4 border-l-primary">
+            <CardHeader>
+              <div>
+                <CardTitle>
+                  {SOUL_CLAIM.count} — {SOUL_CLAIM.title}
+                </CardTitle>
+                <CardDescription>Added by amendment, pleaded in the alternative.</CardDescription>
+              </div>
+            </CardHeader>
+            <CardContent className="space-y-4 text-[0.95rem] leading-relaxed">
               <p>
-                Navigator mounts this bundle at <code>{portalPath('')}</code> and streams it rather
-                than redirecting to a signed URL — a signed URL is shareable by whoever holds it and
-                would not carry your session.
+                A second count is now before the court: whether Homer Simpson may rescind an alleged
+                contract conveying his soul, given in exchange for a doughnut he ate in two sittings
+                a year apart.
+              </p>
+              <Button asChild>
+                <a href={portalPath('#introduction')}>
+                  Read the introduction to {SOUL_CLAIM.count} <ArrowRight />
+                </a>
+              </Button>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <div>
+                <CardTitle>Next steps</CardTitle>
+                <CardDescription>In the order they are useful.</CardDescription>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <ol className="space-y-4">
+                {NEXT_STEPS.map((step, index) => (
+                  <li key={step.id} className="flex gap-4">
+                    <span
+                      aria-hidden="true"
+                      className="flex size-7 shrink-0 items-center justify-center rounded-full bg-primary/10 font-mono text-xs font-bold text-primary"
+                    >
+                      {index + 1}
+                    </span>
+                    <div>
+                      <p className="font-serif font-semibold">{step.title}</p>
+                      {step.detail ? (
+                        <p className="mt-0.5 text-sm text-muted-foreground">{step.detail}</p>
+                      ) : null}
+                    </div>
+                  </li>
+                ))}
+              </ol>
+            </CardContent>
+          </Card>
+        </div>
+
+        <div className="space-y-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>About this portal</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4 text-[0.95rem] leading-relaxed">
+              <p>
+                Navigator mounts this bundle at{' '}
+                <code className="rounded bg-muted px-1.5 py-0.5 font-mono text-xs">
+                  {portalPath('')}
+                </code>{' '}
+                and streams it rather than redirecting to a signed URL — a signed URL is shareable
+                by whoever holds it and would not carry your session.
               </p>
               <p>
-                It is a Vite + React build on{' '}
-                <ExternalLink href="https://github.com/neon-law-foundation/navigator-ux">
-                  navigator-ux
-                </ExternalLink>
-                , the component library behind{' '}
-                <ExternalLink href="https://github.com/neon-law-foundation/navigator">
-                  Navigator
-                </ExternalLink>
-                .
+                It is a Vite + React build, styled with Tailwind and shadcn-style components owned
+                in this repository.
               </p>
-            </Panel>
+              <Button asChild variant="outline" size="sm">
+                <a
+                  href="https://github.com/neon-law-foundation/navigator"
+                  target="_blank"
+                  rel="noreferrer noopener"
+                >
+                  Navigator on GitHub <ExternalLink />
+                </a>
+              </Button>
+            </CardContent>
+          </Card>
 
-            <Callout tone="info">
-              There is no backend in this repository. A portal that needs data reads it same-origin
-              from Navigator&apos;s <code>/app/api</code> and writes through its command boundary, so
-              the session cookie and the participation gate apply without any code here doing
-              anything to earn them.
-            </Callout>
+          <Alert variant="info">
+            <AlertTitle>There is no backend in this repository</AlertTitle>
+            <AlertDescription>
+              A portal that needs data reads it same-origin from Navigator&apos;s{' '}
+              <code className="font-mono text-xs">/app/api</code> and writes through its command
+              boundary, so the session cookie and the participation gate apply without any code here
+              doing anything to earn them.
+            </AlertDescription>
+          </Alert>
 
-            <LegalDisclaimer>
-              This portal shows simulated information only. {MATTER.caption} is a fixture matter used
-              to demonstrate Navigator, no part of it describes a real dispute, and nothing here is
-              legal advice.
-            </LegalDisclaimer>
-          </Stack>
-        </Layout>
-      </Shell>
-
-      <NavigatorFooter legal={`Fixture data only — ${MATTER.caption} is a simulated matter.`} />
+          <Card className="border-dashed">
+            <CardHeader>
+              <CardTitle className="text-base">Legal notice</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-sm leading-relaxed text-muted-foreground">
+                This portal shows simulated information only. {MATTER.caption} is a fixture matter
+                used to demonstrate Navigator, no part of it describes a real dispute, and nothing
+                here is legal advice.
+              </p>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
     </div>
   )
 }
