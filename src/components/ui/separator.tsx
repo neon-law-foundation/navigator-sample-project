@@ -1,3 +1,6 @@
+// Copyright (C) 2026 Neon Law Foundation.
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 import * as SeparatorPrimitive from '@radix-ui/react-separator'
 import type { ComponentProps } from 'react'
 

@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 #
+# Copyright (C) 2026 Neon Law Foundation.
+# SPDX-License-Identifier: AGPL-3.0-or-later
+#
 # Render every notation template in this repository to the PDF the portal
 # serves.
 #

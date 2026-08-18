@@ -167,11 +167,15 @@ view is a bookmarkable URL that cannot 404.
 
 ## License
 
-Licensed under the [GNU Affero General Public License v3.0 or later](./LICENSE). See
-[LICENSE.md](./LICENSE.md), which covers section 13 — deploy a **modified** version for other people to
-use over a network and you owe those users its source — and the third-party terms this grant does not
-reach: React, Tailwind CSS, the Radix primitives, `lucide-react`, and `d3-force` stay under their own MIT
-and ISC licenses.
+Copyright (C) 2026 Neon Law Foundation. Licensed under the
+[GNU Affero General Public License v3.0 or later](./LICENSE) — [`LICENSE`](./LICENSE) is the license text
+verbatim as the Free Software Foundation publishes it, and every source file carries the matching SPDX
+notice.
+
+See [LICENSE.md](./LICENSE.md), which covers section 13 — deploy a **modified** version for other people
+to use over a network and you owe those users its source — and the third-party terms this grant does not
+reach: React, Tailwind CSS, the Radix primitives, `clsx`, and `tailwind-merge` stay MIT; `lucide-react`
+and `d3-force` stay ISC; `class-variance-authority` stays Apache-2.0.
 
 ```text
 SPDX-License-Identifier: AGPL-3.0-or-later
