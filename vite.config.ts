@@ -1,8 +1,11 @@
+// Copyright (C) 2026 Neon Law Foundation.
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 import tailwindcss from '@tailwindcss/vite'
 import react from '@vitejs/plugin-react'
 import { fileURLToPath } from 'node:url'
 // vitest/config re-exports defineConfig with the `test` block typed.
-import { defineConfig } from 'vitest/config'
+import { defineConfig, type Plugin } from 'vitest/config'
 
 /**
  * Where Navigator mounts this bundle, baked in at build time.
@@ -19,9 +22,47 @@ import { defineConfig } from 'vitest/config'
  */
 const MOUNT = '/app/projects/simpsons/portal/'
 
+/**
+ * The license notice carried into the published bundle.
+ *
+ * Kept to the identifier and the source pointer rather than the full notice:
+ * `LICENSE` in the repository is the terms, and a reader who has the SPDX tag
+ * and a way to reach the source can get to them.
+ */
+const LICENSE_BANNER = `/*!
+ * Simpson v. Flanders — Client Portal.
+ * Copyright (C) 2026 Neon Law Foundation.
+ * SPDX-License-Identifier: AGPL-3.0-or-later
+ *
+ * Source: https://github.com/neon-law-foundation/navigator-sample-project
+ */`
+
+/**
+ * Prepend that notice to every emitted JavaScript chunk.
+ *
+ * `build.rollupOptions.output.banner` is the obvious place for this and does
+ * nothing here: Vite 8 generates and minifies with Oxc, which drops the comment
+ * on its way out. `generateBundle` sees the chunks after code generation, so a
+ * notice added there is the notice that lands on disk.
+ *
+ * The stylesheet needs no equivalent — its notice is a `/*!` legal comment,
+ * which the CSS minifier keeps — and `index.html` is not minified at all.
+ */
+function licenseBanner(): Plugin {
+  return {
+    name: 'portal-license-banner',
+    generateBundle(_options, bundle) {
+      for (const chunk of Object.values(bundle)) {
+        if (chunk.type !== 'chunk') continue
+        chunk.code = `${LICENSE_BANNER}\n${chunk.code}`
+      }
+    },
+  }
+}
+
 export default defineConfig({
   base: MOUNT,
-  plugins: [react(), tailwindcss()],
+  plugins: [react(), tailwindcss(), licenseBanner()],
   resolve: {
     // `@/…` for `src/…`, which is the import style every shadcn component
     // ships with. Keeping it means a component pasted from the registry drops
@@ -39,6 +80,10 @@ export default defineConfig({
   test: {
     globals: true,
     environment: 'jsdom',
+    // Vitest's default answers every stylesheet import with an empty string,
+    // including a `?raw` one. `license.test.ts` reads the emitted stylesheet to
+    // check the notice survived minification, and cannot do that against ''.
+    css: true,
     setupFiles: ['./src/test/setup.ts'],
     include: ['src/**/*.test.{ts,tsx}'],
   },
