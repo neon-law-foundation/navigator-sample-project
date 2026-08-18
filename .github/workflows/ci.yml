@@ -28,6 +28,13 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm lint
 
+      # `package.json` invokes the render script by path, so its mode is part of
+      # the interface. An editor or a rewrite-through-a-temp-file drops the bit
+      # silently, git records the mode change without comment, and nothing fails
+      # until someone runs `pnpm render:documents`.
+      - name: the render script is executable
+        run: test -x scripts/render-documents.sh
+
   verify:
     runs-on: ubuntu-latest
     steps:
@@ -47,10 +54,10 @@ jobs:
       - run: pnpm typecheck
       - run: pnpm build
 
-      # After the build, never before. The bundle gate asserts on real output —
-      # that nothing reaches off-origin, and that the fonts are the ones the
-      # library actually ships — so running it first would pass by finding
-      # nothing to check rather than by being correct.
+      # After the build, never before. The bundle and license gates assert on
+      # real output — that nothing reaches off-origin, and that the AGPL notice
+      # survived into every emitted file — so running them first would pass by
+      # finding nothing to check rather than by being correct.
       - run: pnpm test
 
   # The single required status check. It runs nothing itself: the jobs above do
