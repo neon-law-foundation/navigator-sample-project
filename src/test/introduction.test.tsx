@@ -6,7 +6,9 @@ import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 
 import { App } from '../App'
 import { DOCUMENTS } from '../documents'
+import { canonicalUrl, GLOSSARY } from '../glossary'
 import { MOUNT } from '../mount'
+import { MATTER_PEOPLE, NAVIGATOR_PEOPLE } from '../people'
 import { AUTHORITIES } from '../research'
 import { GRAPH_NODES } from '../soulContract'
 
@@ -52,10 +54,12 @@ describe('the introduction to Count II', () => {
     expect(tabs.map((tab) => tab.textContent?.trim())).toEqual([
       'The introduction',
       'The web',
+      'People',
       'Chronology',
       'The question',
       'Research',
       'Documents',
+      'Glossary',
     ])
     expect(tabs[0]).toHaveAttribute('aria-selected', 'true')
   })
@@ -118,6 +122,62 @@ describe('the introduction to Count II', () => {
         .getAllByRole('link')
         .filter((link) => link.getAttribute('href') === `${MOUNT}${doc.path}`)
       expect(links.length, `no link to ${doc.path}`).toBeGreaterThan(0)
+    }
+  })
+
+  it('opens the engagement letter first, on firm letterhead', async () => {
+    await openTab('Documents')
+
+    // The engagement is the document that makes the other two possible, so it
+    // is the one a reader arrives at. It is also the only one rendered through
+    // the `letter` profile, and the card says so — the render profile is a fact
+    // about the template, not a detail of the PDF.
+    const [first] = DOCUMENTS
+    expect(first?.id).toBe('engagement')
+    expect(first?.format).toBe('letter')
+    expect(await screen.findByLabelText('Engagement Letter')).toBeInTheDocument()
+    expect(screen.getByText(/on firm letterhead/)).toBeInTheDocument()
+  })
+
+  it('keeps the accounts and the parties on separate rosters', async () => {
+    await openTab('People')
+
+    // Every seeded Navigator Person, by the address the fixture signs in with.
+    // These are the rows that can *read* the matter.
+    for (const person of NAVIGATOR_PEOPLE) {
+      expect(screen.getByText(person.email), person.email).toBeInTheDocument()
+      expect(screen.getAllByText(person.name).length, person.name).toBeGreaterThan(0)
+    }
+
+    // The Admin's missing participation row is the fixture's whole access
+    // lesson, so the table has to show the absence rather than omit the person.
+    expect(screen.getByText('no row')).toBeInTheDocument()
+
+    // Every person in the pleaded facts, as a heading in their household. None
+    // of them is an account, and the page says which is which.
+    for (const person of MATTER_PEOPLE) {
+      expect(
+        screen.getByRole('heading', { name: person.name }),
+        person.name,
+      ).toBeInTheDocument()
+      expect(person.signsIn).toBe(false)
+    }
+
+    // The things in the graph are not people, and the roster is people only.
+    expect(screen.queryByRole('heading', { name: 'The Doughnut' })).toBeNull()
+  })
+
+  it('links every glossary term to the canonical entry that governs it', async () => {
+    await openTab('Glossary')
+
+    const hrefs = screen.getAllByRole('link').map((link) => link.getAttribute('href'))
+
+    for (const term of GLOSSARY) {
+      expect(screen.getByRole('heading', { name: term.term }), term.term).toBeInTheDocument()
+      // This repository has no authority over Navigator's vocabulary, so an
+      // entry a reader cannot check against the document that does is worse
+      // than no entry at all.
+      expect(hrefs, `no canonical link for ${term.term}`).toContain(canonicalUrl(term))
     }
   })
 

@@ -30,8 +30,8 @@ custom_questions:
     prompt: What is the date of this notice?
 workflow:
   BEGIN:
-    _: staff_review
-  staff_review:
+    _: lawyer_review
+  lawyer_review:
     _: END
   END: {}
 ---

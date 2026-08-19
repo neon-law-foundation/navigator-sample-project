@@ -287,6 +287,18 @@ export const CHRONOLOGY: FeedPost[] = [
     body: 'The day after the doughnut is gone. If the trier accepts this date, the limitations clock and the ratification analysis both start here rather than at the first bite.',
   },
   {
+    id: 'engaged',
+    date: '2026-04-20',
+    dateLabel: '20 April 2026',
+    actor: 'Neon Law',
+    role: 'Through Lawrence Lawyer',
+    initials: 'NL',
+    accent: 'brand',
+    kind: 'Engagement',
+    title: 'The engagement letter is signed',
+    body: 'Five days after discovery, and the reason anything after this date can be done "through counsel." Its scope is the arbitration the street\'s recorded covenants require these neighbors to hold before either of them may try a claim of this kind.',
+  },
+  {
     id: 'notice',
     date: '2026-05-02',
     dateLabel: '2 May 2026',

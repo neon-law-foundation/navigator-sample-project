@@ -26,8 +26,8 @@ custom_questions:
     prompt: On what date did the client first mention the soul-conveyance term?
 workflow:
   BEGIN:
-    _: staff_review
-  staff_review:
+    _: lawyer_review
+  lawyer_review:
     _: END
   END: {}
 ---
