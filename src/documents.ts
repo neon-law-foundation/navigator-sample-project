@@ -14,6 +14,16 @@
  * the point of use rather than written absolute, for the same reason every
  * other link in this app is — a hardcoded `/app/projects/simpsons/...` breaks
  * silently the day the mount moves.
+ *
+ * These are static files beside the bundle **because this is the sample
+ * project**. In Navigator the documents of a real matter are loaded from blob
+ * storage, and that storage carries authorization rules tailored to the
+ * Project: who may read a document is decided there, per project, rather than
+ * by anything in a bundle the reader has already downloaded.
+ *
+ * That difference does not reach the viewer. `PdfViewer` takes a URL and reads
+ * it same-origin, so the change is where `path` points — not how the document
+ * is opened, painted, or searched.
  */
 
 export interface MatterDocument {

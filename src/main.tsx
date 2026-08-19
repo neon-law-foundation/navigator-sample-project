@@ -21,10 +21,21 @@
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
 
-// The stylesheet, imported exactly once, at the entry. It carries the Tailwind
-// build and the theme variables every component in `src/components/ui` reads.
-// It fetches nothing at runtime — no CDN, no webfont request — which is what
-// lets it serve under a CSP with no off-origin sources.
+// navigator-ux's stylesheet, which carries its tokens, its component rules, and
+// the two Source Serif 4 woff2 files it vendors. Imported *before* the portal's
+// own stylesheet so that where the two define the same thing, this repository
+// wins: the library declares its tokens at `:root`, and `index.css` overrides
+// at `:root:not(.light)`, which only takes effect reliably if it is not the one
+// arriving first.
+//
+// Like `index.css`, it fetches nothing at runtime. The fonts are relative URLs
+// inside the package, so Vite emits them as assets under the mount and they are
+// served same-origin — which is what keeps the CSP with no off-origin sources.
+import '@neon-law-foundation/navigator-ux/styles.css'
+
+// The portal's own stylesheet, imported exactly once, at the entry. It carries
+// the Tailwind build and the theme variables every component in
+// `src/components/ui` reads, plus the text-layer rules `PdfViewer` depends on.
 import './index.css'
 
 import { StrictMode } from 'react'

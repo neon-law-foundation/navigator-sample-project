@@ -18,6 +18,15 @@ import { GRAPH_NODES } from '../soulContract'
  * takes, and the thing that would break if the routing changed.
  */
 
+// The documents tab mounts the viewer, and pdf.js cannot run under jsdom. The
+// double keeps this file about the tab rather than about the environment's
+// canvas shims; `pdf-viewer.test.tsx` is where the viewer itself is tested.
+vi.mock('../pdf', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('../pdf')>()
+  const { pdfDouble } = await import('./pdf-double')
+  return { ...actual, ...pdfDouble() }
+})
+
 beforeEach(() => {
   window.location.hash = '#introduction'
 })
@@ -76,11 +85,29 @@ describe('the introduction to Count II', () => {
     await openTab('Documents')
 
     for (const doc of DOCUMENTS) {
-      expect(screen.getByRole('button', { name: doc.title })).toBeInTheDocument()
+      // `getAllBy`: the open document's title is on its card and again on the
+      // viewer panel beside it.
+      expect(screen.getAllByText(doc.title).length, doc.title).toBeGreaterThan(0)
       // The provenance is the point of this tab: a reader should be able to see
       // which notation template produced the PDF they are looking at.
       expect(screen.getByText(doc.code)).toBeInTheDocument()
     }
+  })
+
+  it('opens a chosen document in the viewer', async () => {
+    const { user } = await openTab('Documents')
+    const [first, second] = DOCUMENTS
+    if (!first || !second) throw new Error('the fixture needs two documents')
+
+    // The first document is open on arrival, so its control reads as the
+    // current one rather than as an invitation to switch.
+    expect(screen.getByRole('button', { name: 'Viewing' })).toBeInTheDocument()
+    expect(await screen.findByLabelText(first.title)).toBeInTheDocument()
+
+    await user.click(screen.getAllByRole('button', { name: 'View' })[0] as HTMLElement)
+
+    expect(await screen.findByLabelText(second.title)).toBeInTheDocument()
+    expect(screen.queryByLabelText(first.title)).not.toBeInTheDocument()
   })
 
   it('links every document to a PDF under the mount', async () => {
