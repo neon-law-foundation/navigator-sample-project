@@ -37,6 +37,17 @@ const scripts = import.meta.glob<string>('../../dist/assets/*.js', {
 // whole assertion.
 const pdfs = import.meta.glob('../../dist/documents/*.pdf', { eager: true })
 
+// The pdf.js worker, emitted beside the chunks rather than bundled into them,
+// and the typeface navigator-ux vendors. Both are binary as far as this test is
+// concerned: what matters is that they exist and are reached from the mount.
+const workers = import.meta.glob('../../dist/assets/*.worker*.mjs', { eager: true })
+const fonts = import.meta.glob('../../dist/assets/*.woff2', { eager: true })
+const styles = import.meta.glob<string>('../../dist/assets/*.css', {
+  query: '?raw',
+  import: 'default',
+  eager: true,
+})
+
 const bundledJs = Object.values(scripts).join('\n')
 
 /** The built entry document, or a failure naming the command that emits it. */
@@ -86,6 +97,53 @@ describe('the built bundle', () => {
     const names = Object.keys(pdfs).map((path) => path.split('/').pop())
     expect(names, BUILD_FIRST).toContain('notice-of-rescission.pdf')
     expect(names).toContain('affidavit-lisa-simpson.pdf')
+  })
+
+  it('ships the pdf.js worker, and reaches it from the mount', () => {
+    // The viewer's most silent failure: with no resolvable worker, pdf.js
+    // reaches for a CDN, the portal CSP blocks it, and the reader gets a
+    // spinner that never resolves. An emitted worker referenced by a mounted
+    // URL is what rules that out.
+    expect(Object.keys(workers).length, BUILD_FIRST).toBe(1)
+
+    const reference = bundledJs.match(/assets\/pdf\.worker[^`'"]*\.mjs/)
+    expect(reference, 'no worker URL in the bundle').not.toBeNull()
+    expect(bundledJs).toContain(MOUNT)
+
+    const emitted = Object.keys(workers).map((path) => path.split('/').pop())
+    expect(emitted).toContain(reference?.[0]?.replace('assets/', ''))
+  })
+
+  it('keeps pdf.js out of the entry chunk', () => {
+    // A reader who never opens the documents tab should never download the
+    // parser. It is nearly half the JavaScript in the build, so this is the
+    // difference between a portal that loads fast and one that does not — and
+    // a static `import` anywhere in `src/pdf.ts` would quietly undo it.
+    const entry = builtDocument().match(/src="([^"]+\.js)"/)?.[1]
+    expect(entry, BUILD_FIRST).toBeDefined()
+
+    const name = entry?.split('/').pop() ?? ''
+    const [, code] =
+      Object.entries(scripts).find(([path]) => path.endsWith(name)) ?? ([] as string[])
+    expect(code, `no built chunk named ${name}`).toBeDefined()
+    expect(code).not.toContain('PDFDocumentLoadingTask')
+
+    // …and it is in the build, just somewhere else.
+    expect(bundledJs).toContain('PDFDocumentLoadingTask')
+  })
+
+  it('serves the typeface from the mount rather than fetching it', () => {
+    // navigator-ux vendors Source Serif 4 under the OFL and this build emits
+    // it. A remote font in an authenticated portal is a third party watching
+    // every page of a matter, so the only acceptable source is this origin.
+    expect(Object.keys(fonts).length, BUILD_FIRST).toBe(2)
+
+    const css = Object.values(styles).join('\n')
+    const urls = Array.from(css.matchAll(/url\(([^)]+)\)/g)).map((match) => match[1] ?? '')
+    expect(urls.length).toBeGreaterThan(0)
+    for (const url of urls) {
+      expect(url.startsWith(MOUNT), `${url} is not under ${MOUNT}`).toBe(true)
+    }
   })
 
   it('loads no stylesheet or script from a CDN', () => {

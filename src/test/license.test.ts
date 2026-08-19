@@ -31,8 +31,9 @@ const LICENSE_NEWLINES = 661
 const LICENSE_BYTES = 34523
 
 // Globbed with a trailing `*` because Vite's glob plugin rejects a pattern with
-// no extension. `LICENSE.md` comes along for the ride and is narrowed out below:
-// it is the guide to the license, not the license.
+// no extension. The pattern is deliberately wider than the one file it should
+// find — `it is the only license file` below is what makes that width a check
+// rather than an accident.
 const licenses = import.meta.glob<string>('../../LICENSE*', {
   query: '?raw',
   import: 'default',
@@ -113,6 +114,15 @@ describe('the license', () => {
     expect(text.trimEnd().endsWith('<https://www.gnu.org/licenses/>.')).toBe(true)
     expect(lines.length - 1).toBe(LICENSE_NEWLINES)
     expect(text.length).toBe(LICENSE_BYTES)
+  })
+
+  it('is the only license file', () => {
+    // One file, and it is the FSF's text. A repository that also carries a
+    // guide, a summary, or a NOTICE has two things that can disagree about the
+    // terms, and the reader has no way to know which one governs. The terms are
+    // `LICENSE`; everything explaining them lives in the README, which nobody
+    // mistakes for a grant.
+    expect(Object.keys(licenses).map((path) => path.split('/').pop())).toEqual(['LICENSE'])
   })
 
   it('is the license `package.json` declares', () => {

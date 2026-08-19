@@ -206,3 +206,94 @@
     text-rendering: optimizeLegibility;
   }
 }
+
+/*
+ * The PDF text layer.
+ *
+ * pdf.js paints a page to a canvas and then positions one transparent element
+ * per text run on top of it, so that the page can be selected, copied, and read
+ * by a screen reader instead of being a picture of words. Those elements are
+ * built by the library and styled by whoever embeds it: this block is the
+ * styling contract, and `src/PdfViewer.tsx` sets the `--total-scale-factor` the
+ * runs are positioned against.
+ *
+ * Derived from `pdf_viewer.css` in pdf.js, Copyright the Mozilla Foundation,
+ * licensed under the Apache License 2.0. Reduced to the rules the runs actually
+ * need: the upstream file also carries the annotation, editor, and thumbnail
+ * layers this portal does not render, and importing it whole would ship them.
+ *
+ * `color-scheme: only light` is not decoration. The canvas beneath is a white
+ * page in either scheme, and without this the browser inverts the selection
+ * colors over it in dark mode, which leaves selected text unreadable.
+ */
+.pdf-text-layer {
+  color-scheme: only light;
+
+  position: absolute;
+  inset: 0;
+  overflow: clip;
+  line-height: 1;
+  text-align: initial;
+  text-size-adjust: none;
+  forced-color-adjust: none;
+  transform-origin: 0 0;
+  caret-color: CanvasText;
+  z-index: 0;
+
+  --total-scale-factor: 1;
+  --min-font-size: 1;
+  --text-scale-factor: calc(var(--total-scale-factor) * var(--min-font-size));
+  --min-font-size-inv: calc(1 / var(--min-font-size));
+}
+
+.pdf-text-layer :is(span, br) {
+  color: transparent;
+  position: absolute;
+  white-space: pre;
+  cursor: text;
+  transform-origin: 0% 0%;
+  user-select: text;
+}
+
+/*
+ * The run's own geometry, which pdf.js writes onto each element as custom
+ * properties. Dropping this rule does not fail visibly — the text simply piles
+ * up at the top-left corner at one size, and only a reader dragging a selection
+ * finds out.
+ */
+.pdf-text-layer > :not(.markedContent),
+.pdf-text-layer .markedContent span:not(.markedContent) {
+  z-index: 1;
+
+  --font-height: 0;
+  --scale-x: 1;
+  --rotate: 0deg;
+
+  font-size: calc(var(--text-scale-factor) * var(--font-height));
+  transform: rotate(var(--rotate)) scaleX(var(--scale-x)) scale(var(--min-font-size-inv));
+}
+
+.pdf-text-layer .markedContent {
+  display: contents;
+}
+
+/* An image run is not text: it should not take a caret or join a selection. */
+.pdf-text-layer span[role='img'] {
+  user-select: none;
+  cursor: default;
+}
+
+.pdf-text-layer ::selection {
+  background: color-mix(in srgb, var(--primary) 40%, transparent);
+}
+
+/*
+ * A find hit, marked by `PdfViewer` inside the transparent runs. The text stays
+ * transparent — what shows through is the glyph painted on the canvas below, so
+ * the highlight has to be a wash rather than an opaque fill.
+ */
+.pdf-text-layer .pdf-find-hit {
+  background: color-mix(in srgb, var(--warning) 55%, transparent);
+  color: transparent;
+  border-radius: 2px;
+}

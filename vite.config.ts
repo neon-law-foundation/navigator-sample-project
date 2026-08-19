@@ -38,23 +38,39 @@ const LICENSE_BANNER = `/*!
  */`
 
 /**
- * Prepend that notice to every emitted JavaScript chunk.
+ * Prepend that notice to every emitted JavaScript chunk and stylesheet.
  *
  * `build.rollupOptions.output.banner` is the obvious place for this and does
  * nothing here: Vite 8 generates and minifies with Oxc, which drops the comment
- * on its way out. `generateBundle` sees the chunks after code generation, so a
+ * on its way out. `generateBundle` sees the output after code generation, so a
  * notice added there is the notice that lands on disk.
  *
- * The stylesheet needs no equivalent — its notice is a `/*!` legal comment,
- * which the CSS minifier keeps — and `index.html` is not minified at all.
+ * The stylesheet used to carry its own `/*!` legal comment in `src/index.css`
+ * and rely on the CSS minifier keeping it. That stopped being true the day
+ * navigator-ux's stylesheet was imported ahead of it: lightningcss keeps a
+ * legal comment at the top of what it emits, and `index.css` was no longer at
+ * the top. Nothing failed loudly — the notice simply left the build. Emitting
+ * it here instead makes it independent of which stylesheet happens to be first.
+ *
+ * `index.html` needs no equivalent; it is not minified, so the comment written
+ * into the template is the comment that ships.
  */
 function licenseBanner(): Plugin {
   return {
     name: 'portal-license-banner',
     generateBundle(_options, bundle) {
-      for (const chunk of Object.values(bundle)) {
-        if (chunk.type !== 'chunk') continue
-        chunk.code = `${LICENSE_BANNER}\n${chunk.code}`
+      for (const file of Object.values(bundle)) {
+        if (file.type === 'chunk') {
+          file.code = `${LICENSE_BANNER}\n${file.code}`
+          continue
+        }
+
+        // Assets are stylesheets, fonts, and the pdf.js worker. Only the
+        // stylesheets are ours to annotate: the worker is Apache-2.0 pdf.js and
+        // the fonts are OFL, and stamping this repository's notice onto either
+        // would be a false claim rather than a formality.
+        if (!file.fileName.endsWith('.css') || typeof file.source !== 'string') continue
+        file.source = `${LICENSE_BANNER}\n${file.source}`
       }
     },
   }

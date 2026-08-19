@@ -16,6 +16,7 @@ import { Doughnut, HedgeScene, type BiteState } from './art'
 import { DOCUMENTS, type MatterDocument } from './documents'
 import { MATTER } from './matter'
 import { portalPath } from './mount'
+import { PdfViewer } from './PdfViewer'
 import { READY_KICKER } from './ready'
 import { RelationshipGraph } from './RelationshipGraph'
 import { AUTHORITIES, RESEARCH_NOTE, type Authority, type Leaning } from './research'
@@ -28,6 +29,22 @@ import {
   SOUL_CLAIM,
   SOUL_FACTS,
 } from './soulContract'
+
+/*
+ * navigator-ux, used for the documents tab only.
+ *
+ * `Badge` and `Button` are aliased because the shadcn components below own
+ * those names in this file. Everything else lands unaliased.
+ */
+import {
+  Badge as NavBadge,
+  Button as NavButton,
+  Callout,
+  DownloadCard,
+  DownloadGrid,
+  LinkButton,
+  Panel,
+} from '@neon-law-foundation/navigator-ux'
 
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Badge } from '@/components/ui/badge'
@@ -686,9 +703,14 @@ function ResearchTab() {
  * The documents tab.
  *
  * Every PDF here is produced by `navigator template render` from a notation
- * template in `templates/neon_law/`, which is why the table shows the template
- * path and code beside each row: the provenance is the point. `pnpm
- * render:documents` regenerates both.
+ * template in `templates/neon_law/`, which is why each card names the template
+ * and its code: the provenance is the point. `pnpm render:documents`
+ * regenerates both.
+ *
+ * This is the one area built on navigator-ux rather than the shadcn components
+ * the rest of the portal uses — `Panel`, `DownloadCard`, and `Callout` come
+ * from the library. The viewer inside them does not: see `PdfViewer` for why
+ * this repository owns that one.
  */
 function DocumentsTab() {
   const [activeId, setActiveId] = useState<string>(DOCUMENTS[0]?.id ?? '')
@@ -697,150 +719,100 @@ function DocumentsTab() {
 
   return (
     <div className="space-y-6">
-      <Card>
-        <CardHeader>
-          <div>
-            <CardTitle>Documents</CardTitle>
-            <CardDescription>
-              Rendered from the notation templates in this repository, not hand-authored.
-            </CardDescription>
-          </div>
-          <Badge variant="secondary">{DOCUMENTS.length} documents</Badge>
-        </CardHeader>
-        <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Document</TableHead>
-                <TableHead>Kind</TableHead>
-                <TableHead>Date</TableHead>
-                <TableHead>Template</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead className="text-right">Open</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {DOCUMENTS.map((doc) => (
-                <TableRow key={doc.id} data-state={doc.id === active?.id ? 'selected' : undefined}>
-                  <TableCell>
-                    <button
-                      type="button"
-                      onClick={() => setActiveId(doc.id)}
-                      className="text-left font-serif font-semibold text-primary underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                    >
-                      {doc.title}
-                    </button>
-                    <p className="mt-0.5 text-xs text-muted-foreground">{doc.pages} pages · PDF</p>
-                  </TableCell>
-                  <TableCell className="text-muted-foreground">{doc.kind}</TableCell>
-                  <TableCell className="whitespace-nowrap text-muted-foreground">
-                    {doc.dateLabel}
-                  </TableCell>
-                  <TableCell>
-                    <code className="rounded bg-muted px-1.5 py-0.5 font-mono text-xs">
-                      {doc.code}
-                    </code>
-                  </TableCell>
-                  <TableCell>
-                    <Badge variant={doc.status === 'served' ? 'success' : 'secondary'}>
-                      {doc.status}
-                    </Badge>
-                  </TableCell>
-                  <TableCell className="text-right">
-                    <Button asChild variant="outline" size="sm">
-                      <a href={portalPath(doc.path)} target="_blank" rel="noreferrer">
-                        Open <ExternalLink />
-                      </a>
-                    </Button>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>
+      <Panel
+        title="Documents"
+        note="Rendered from the notation templates in this repository, not hand-authored."
+        actions={<NavBadge tone="source">{DOCUMENTS.length} documents</NavBadge>}
+      >
+        <DownloadGrid>
+          {DOCUMENTS.map((doc) => (
+            <DownloadCard
+              key={doc.id}
+              title={doc.title}
+              badge={
+                <NavBadge tone={doc.status === 'served' ? 'ready' : 'review'}>{doc.status}</NavBadge>
+              }
+              description={
+                <>
+                  {doc.kind} · {doc.dateLabel} · {doc.pages} pages
+                  <br />
+                  Rendered from <code className="font-mono text-xs">{doc.code}</code>
+                </>
+              }
+              actions={
+                <>
+                  <NavButton
+                    variant={doc.id === active?.id ? 'primary' : 'default'}
+                    onClick={() => setActiveId(doc.id)}
+                    aria-pressed={doc.id === active?.id}
+                  >
+                    {doc.id === active?.id ? 'Viewing' : 'View'}
+                  </NavButton>
+                  <LinkButton href={portalPath(doc.path)} target="_blank" rel="noreferrer noopener">
+                    Open PDF
+                  </LinkButton>
+                </>
+              }
+            />
+          ))}
+        </DownloadGrid>
+      </Panel>
 
       {active ? (
         <Split>
-          <Card className="overflow-hidden">
-            <CardHeader>
-              <div>
-                <CardTitle>{active.title}</CardTitle>
-                <CardDescription>
-                  {active.kind} · {active.dateLabel}
-                </CardDescription>
-              </div>
-              <Button asChild size="sm">
-                <a href={portalPath(active.path)} target="_blank" rel="noreferrer">
-                  Open full size <ExternalLink />
-                </a>
-              </Button>
-            </CardHeader>
-            {/*
-             * `<object>` rather than `<iframe>`: it degrades to its own children
-             * when the browser has no inline PDF viewer, which is most mobile
-             * browsers, and gives those readers a link instead of an empty grey
-             * rectangle.
-             */}
-            <object
-              key={active.id}
-              data={portalPath(active.path)}
-              type="application/pdf"
-              aria-label={`${active.title}, rendered to PDF`}
-              className="h-[38rem] w-full border-t bg-muted"
-            >
-              <div className="p-6 text-sm">
-                Your browser will not display the PDF inline.{' '}
-                <a className="text-primary underline" href={portalPath(active.path)}>
-                  Open {active.title}
-                </a>{' '}
-                instead.
-              </div>
-            </object>
-          </Card>
+          {/*
+            `key` on the panel, not just the viewer: switching documents should
+            start a new viewer rather than hand a live one a different `src`,
+            so the page number and zoom of the file being left behind do not
+            carry over onto the file being opened.
+          */}
+          <Panel
+            key={active.id}
+            title={active.title}
+            note={`${active.kind} · ${active.dateLabel}`}
+            actions={
+              <LinkButton href={portalPath(active.path)} target="_blank" rel="noreferrer noopener">
+                Open full size
+              </LinkButton>
+            }
+            className="overflow-hidden p-0"
+          >
+            <PdfViewer
+              src={portalPath(active.path)}
+              label={active.title}
+              className="h-[40rem] rounded-md border"
+            />
+          </Panel>
 
           <div className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Why it matters</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-[0.95rem] leading-relaxed">{active.why}</p>
-              </CardContent>
-            </Card>
+            <Panel title="Why it matters">
+              <p className="text-[0.95rem] leading-relaxed">{active.why}</p>
+            </Panel>
 
-            <Card>
-              <CardHeader>
-                <CardTitle>How this document is made</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <Prose>
-                  <p>
-                    It is not a file somebody typed.{' '}
-                    <code className="rounded bg-muted px-1.5 py-0.5 font-mono text-xs">
-                      {active.template}
-                    </code>{' '}
-                    is a notation template — Markdown with a questionnaire and a workflow in its
-                    frontmatter — and the PDF is what <code>navigator template render</code>{' '}
-                    produces from it once the answers are supplied.
-                  </p>
-                  <p>
-                    The renderer validates against the same notation rule set as{' '}
-                    <code>navigator validate</code> and refuses any template with a violation, so a
-                    document that renders is a document that passed. Markdown becomes Typst and
-                    compiles in pure Rust — no shell-out, no headless browser.
-                  </p>
-                  <p className="text-muted-foreground">
-                    Regenerate both with{' '}
-                    <code className="rounded bg-muted px-1.5 py-0.5 font-mono text-xs">
-                      pnpm render:documents
-                    </code>
-                    . The dates and the client name are <code>--answer</code> flags, which is the
-                    same substitution a real matter performs from questionnaire responses.
-                  </p>
-                </Prose>
-              </CardContent>
-            </Card>
+            <Panel title="How this document is made">
+              <Prose>
+                <p>
+                  It is not a file somebody typed.{' '}
+                  <code className="rounded bg-muted px-1.5 py-0.5 font-mono text-xs">
+                    {active.template}
+                  </code>{' '}
+                  is a notation template — Markdown with a questionnaire and a workflow in its
+                  frontmatter — and the PDF is what <code>navigator template render</code> produces
+                  from it once the answers are supplied.
+                </p>
+                <p>
+                  The renderer validates against the same notation rule set as{' '}
+                  <code>navigator validate</code> and refuses any template with a violation, so a
+                  document that renders is a document that passed. Markdown becomes Typst and
+                  compiles in pure Rust — no shell-out, no headless browser.
+                </p>
+                <Callout tone="info">
+                  Regenerate both with <code>pnpm render:documents</code>. The dates and the client
+                  name are <code>--answer</code> flags, which is the same substitution a real matter
+                  performs from questionnaire responses.
+                </Callout>
+              </Prose>
+            </Panel>
           </div>
         </Split>
       ) : null}
