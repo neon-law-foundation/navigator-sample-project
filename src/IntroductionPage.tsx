@@ -104,9 +104,9 @@ export function IntroductionPage() {
           </p>
         </div>
         <p className="max-w-3xl text-lg leading-relaxed text-muted-foreground">
-          Ned Flanders offered Homer Simpson a doughnut and called it neat. A term conveying
-          Homer&apos;s soul was, it is alleged, inside the doughnut rather than in anything said.
-          Homer ate part of it, waited {GAP_DAYS} days, and ate the rest because he was hungry. The
+          Wendell Prine offered Dermot Cruller a doughnut and called it neat. A term conveying
+          Dermot&apos;s soul was, it is alleged, inside the doughnut rather than in anything said.
+          Dermot ate part of it, waited {GAP_DAYS} days, and ate the rest because he was hungry. The
           question is whether the year in between costs him the right to undo it.
         </p>
 
@@ -213,7 +213,7 @@ const BITES: Record<BiteState, { label: string; when: string; consequence: strin
     label: 'Before',
     when: '1 April 2025, at the hedge',
     consequence:
-      'An offer, and nothing more. Flanders holds the doughnut out and describes it as "neat." Whatever is written inside it has been said to nobody.',
+      'An offer, and nothing more. Prine holds the doughnut out and describes it as "neat." Whatever is written inside it has been said to nobody.',
   },
   bitten: {
     label: 'One bite',
@@ -225,7 +225,7 @@ const BITES: Record<BiteState, { label: string; when: string; consequence: strin
     label: 'Finished',
     when: `14 April 2026, ${GAP_DAYS} days later`,
     consequence:
-      'Performance is complete, and on the orthodox rule this is where acceptance lands. Homer still does not know about the term. He finds out the following day.',
+      'Performance is complete, and on the orthodox rule this is where acceptance lands. Dermot still does not know about the term. He finds out the following day.',
   },
 }
 
@@ -245,18 +245,18 @@ function StoryTab() {
           <CardContent>
             <Prose>
               <p>
-                On 1 April 2025 Ned Flanders leaned over the hedge between the two properties and
-                offered Homer Simpson a doughnut. Homer alleges Flanders appeared in a horned aspect
-                and said only that the doughnut was <em>neat</em>. Flanders denies the aspect,
+                On 1 April 2025 Wendell Prine leaned over the hedge between the two properties and
+                offered Dermot Cruller a doughnut. Dermot alleges Prine appeared in a horned aspect
+                and said only that the doughnut was <em>neat</em>. Prine denies the aspect,
                 denies concealing anything, and says he was being neighborly.
               </p>
               <p>
-                The doughnut is alleged to have carried a term conveying Homer&apos;s soul — not
+                The doughnut is alleged to have carried a term conveying Dermot&apos;s soul — not
                 spoken, not handed over on paper, but baked into the instrument itself, where an
                 offeree cannot read it without destroying the thing he is being asked to accept.
               </p>
               <p>
-                Homer took one bite and put the rest in the refrigerator. It stayed there for{' '}
+                Dermot took one bite and put the rest in the refrigerator. It stayed there for{' '}
                 {GAP_DAYS} days. On 14 April 2026, hungry and thinking about nothing in particular,
                 he ate the remainder. He learned of the soul term the next day and served notice of
                 rescission seventeen days after that.
@@ -307,7 +307,7 @@ function StoryTab() {
                 A doughnut is an odd instrument, but the problem it creates is an ordinary one. The
                 bargain was performed in two pieces separated by a year, and the two candidate
                 moments of acceptance land on opposite sides of everything that matters: which terms
-                bound Homer, when the clock started, and whether the second bite was a choice or an
+                bound Dermot, when the clock started, and whether the second bite was a choice or an
                 appetite.
               </p>
             </Prose>
@@ -436,8 +436,8 @@ function WebTab() {
           <CircleDot />
           <AlertTitle>The notebook</AlertTitle>
           <AlertDescription>
-            Lisa Simpson&apos;s dated notebook is the most valuable document in the matter. It is
-            the only contemporaneous record bearing on when Homer actually learned of the term — and
+            Odile Cruller&apos;s dated notebook is the most valuable document in the matter. It is
+            the only contemporaneous record bearing on when Dermot actually learned of the term — and
             the whole count turns on that date.
           </AlertDescription>
         </Alert>
@@ -661,12 +661,12 @@ function ChronologyTab() {
           <CardContent>
             <Prose>
               <p>
-                Everything Flanders has is built on the {GAP_DAYS} days in the middle. The argument
+                Everything Prine has is built on the {GAP_DAYS} days in the middle. The argument
                 is intuitive: a man who genuinely thought he had been tricked would not have finished
                 the pastry.
               </p>
               <p>
-                The answer is that the premise is backwards. Homer did not finish it{' '}
+                The answer is that the premise is backwards. Dermot did not finish it{' '}
                 <em>despite</em> knowing — he finished it <em>because</em> he did not know, and the
                 law of ratification cares about exactly that difference.
               </p>
@@ -703,7 +703,7 @@ function QuestionTab() {
       <Card>
         <CardHeader>
           <div>
-            <CardTitle>Can Homer rescind?</CardTitle>
+            <CardTitle>Can Dermot rescind?</CardTitle>
             <CardDescription>
               Five questions, in the order they have to be decided.
             </CardDescription>
@@ -750,8 +750,8 @@ function QuestionTab() {
               <TableRow>
                 <TableHead className="w-[16%]">Question</TableHead>
                 <TableHead className="w-[34%]">The rule</TableHead>
-                <TableHead className="w-[25%]">Simpson</TableHead>
-                <TableHead className="w-[25%]">Flanders</TableHead>
+                <TableHead className="w-[25%]">Cruller</TableHead>
+                <TableHead className="w-[25%]">Prine</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -759,8 +759,8 @@ function QuestionTab() {
                 <TableRow key={issue.id}>
                   <TableCell className="font-serif font-semibold">{issue.title}</TableCell>
                   <TableCell className="text-muted-foreground">{issue.question}</TableCell>
-                  <TableCell>{issue.homer}</TableCell>
-                  <TableCell>{issue.ned}</TableCell>
+                  <TableCell>{issue.dermot}</TableCell>
+                  <TableCell>{issue.wendell}</TableCell>
                 </TableRow>
               ))}
             </TableBody>
@@ -774,14 +774,14 @@ function QuestionTab() {
 /* -------------------------------------------------------------- research */
 
 const LEANING_LABEL: Record<Leaning, string> = {
-  homer: 'Helps Simpson',
-  flanders: 'Helps Flanders',
+  dermot: 'Helps Cruller',
+  prine: 'Helps Prine',
   neutral: 'Cuts both ways',
 }
 
 const LEANING_VARIANT = {
-  homer: 'success',
-  flanders: 'destructive',
+  dermot: 'success',
+  prine: 'destructive',
   neutral: 'warning',
 } as const
 

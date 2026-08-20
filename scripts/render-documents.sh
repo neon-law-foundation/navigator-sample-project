@@ -23,8 +23,8 @@ mkdir -p public/documents
 
 # The answers below are the fixture's dates. A real matter supplies these from
 # questionnaire responses rather than from a shell script.
-CLIENT="Homer J. Simpson"
-ADVERSE="Ned Flanders"
+CLIENT="Dermot A. Cruller"
+ADVERSE="Wendell Prine"
 LAWYER="Lawrence Lawyer"
 OFFER="1 April 2025"
 COMPLETION="14 April 2026"
@@ -32,8 +32,8 @@ DISCOVERY="15 April 2026"
 ENGAGED="20 April 2026"
 NOTICE="2 May 2026"
 FORUM="JAMS, seated in Las Vegas, Nevada"
-SCOPE="Representing the client in the arbitration of his claims against Ned \
-Flanders arising from the doughnut offered over the hedge on 1 April 2025 — \
+SCOPE="Representing the client in the arbitration of his claims against Wendell \
+Prine arising from the doughnut offered over the hedge on 1 April 2025 — \
 trespass to land, and rescission of the alleged instrument conveying the \
 client's soul — and in the Eighth Judicial District Court action already on \
 file to the extent any claim remains before that court."
@@ -47,7 +47,7 @@ navigator template render templates/neon_law/nevada.md \
   --answer custom_datetime__notice_date="$NOTICE"
 
 navigator template render templates/neon_law/nevada_engagement_letter.md \
-  --out public/documents/engagement-letter-homer-simpson.pdf \
+  --out public/documents/engagement-letter-dermot-cruller.pdf \
   --answer person__client="$CLIENT" \
   --answer person__adverse_party="$ADVERSE" \
   --answer person__lawyer_dri="$LAWYER" \
@@ -57,7 +57,7 @@ navigator template render templates/neon_law/nevada_engagement_letter.md \
   --answer custom_single_choice__governing_law="Nevada"
 
 navigator template render templates/neon_law/nevada_affidavit.md \
-  --out public/documents/affidavit-lisa-simpson.pdf \
+  --out public/documents/affidavit-odile-cruller.pdf \
   --answer person__client="$CLIENT" \
   --answer custom_datetime__offer_date="$OFFER" \
   --answer custom_datetime__completion_date="$COMPLETION" \

@@ -1,7 +1,7 @@
 # Navigator Sample Project
 
 The reference **project application** for [Navigator](https://github.com/neon-law-foundation/navigator): a client
-portal for the fixture matter *Simpson v. Flanders*, built with Vite, React 19, Tailwind CSS, and
+portal for the fixture matter *Cruller v. Prine*, built with Vite, React 19, Tailwind CSS, and
 shadcn-style components owned in this repository — plus
 [navigator-ux](https://github.com/neon-law-foundation/navigator-ux) on the documents tab, where it frames a
 PDF viewer this repository owns.
@@ -10,7 +10,7 @@ It exists so that "attach a React app to a matter" has a worked example a contri
 and so Navigator's own local development loop has something real to build and serve instead of a hardcoded HTML
 string.
 
-**Everything here is fixture data.** *Simpson v. Flanders* is a simulated matter. No client data belongs in this
+**Everything here is fixture data.** *Cruller v. Prine* is a simulated matter. No client data belongs in this
 repository, ever.
 
 ## Where it mounts
@@ -237,7 +237,7 @@ Two data files answer questions the graph cannot.
 
 `src/people.ts` holds two rosters that look alike and mean entirely different things. One is the **Navigator
 Persons** — rows that can sign in, each with a system-wide tier and a participation row on this Project. The
-other is the **cast in the pleaded facts**, the Simpson and Flanders households. Homer Simpson is the plaintiff
+other is the **cast in the pleaded facts**, the Cruller and Prine households. Dermot Cruller is the plaintiff
 and has no account; Cleo Client has an account and is not the plaintiff. Keeping those two facts side by side
 is the point of the file: participation is a property of a Person–Project Role row, a party is a fact in a
 pleading, and Navigator never lets the second grant the first. The Navigator Persons are the five the

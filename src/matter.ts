@@ -6,7 +6,7 @@ import type { ActionItem, StatusCell } from './types'
 /**
  * The matter this portal renders — fixture data, and nothing else.
  *
- * *Simpson v. Flanders* is simulated. It is the matter Navigator's own seed
+ * *Cruller v. Prine* is simulated. It is the matter Navigator's own seed
  * opens for every local login (`store/src/seed.rs`), which is why the code,
  * the claim, and the jurisdiction below match that seed exactly: a sample that
  * disagrees with the fixture it is served beside teaches the wrong thing.
@@ -22,7 +22,7 @@ import type { ActionItem, StatusCell } from './types'
 export const MATTER = {
   /** The Project code. It is also the first segment of the bucket prefix. */
   code: 'sample-litigation',
-  caption: 'Simpson v. Flanders',
+  caption: 'Cruller v. Prine',
   claim: 'Trespass to land',
   jurisdiction: 'Nevada',
 } as const

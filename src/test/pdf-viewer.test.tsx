@@ -164,12 +164,12 @@ describe('finding text', () => {
     const { user } = await open()
 
     await user.click(screen.getByRole('button', { name: /Find/ }))
-    await user.type(screen.getByRole('searchbox'), 'Homer')
+    await user.type(screen.getByRole('searchbox'), 'Dermot')
 
     await waitFor(() => {
       const marks = textLayer().querySelectorAll('mark.pdf-find-hit')
       expect(marks.length).toBeGreaterThan(0)
-      expect(marks[0]?.textContent).toBe('Homer')
+      expect(marks[0]?.textContent).toBe('Dermot')
     })
   })
 
@@ -177,7 +177,7 @@ describe('finding text', () => {
     const { user } = await open()
 
     await user.click(screen.getByRole('button', { name: /Find/ }))
-    await user.type(screen.getByRole('searchbox'), 'Simpson')
+    await user.type(screen.getByRole('searchbox'), 'Cruller')
 
     // Once per page, so the counter is a two-entry ring.
     expect(await screen.findByText('1 of 2')).toBeInTheDocument()
@@ -203,7 +203,7 @@ describe('finding text', () => {
     const { user } = await open()
 
     await user.click(screen.getByRole('button', { name: /Find/ }))
-    await user.type(screen.getByRole('searchbox'), 'Homer')
+    await user.type(screen.getByRole('searchbox'), 'Dermot')
     await screen.findByText('1 of 2')
 
     await user.click(screen.getByRole('button', { name: 'Close find' }))
@@ -240,9 +240,9 @@ describe('the toolbar', () => {
 
 describe('findMatches', () => {
   it('finds every occurrence, in reading order, across pages', () => {
-    expect(findMatches(PAGES, 'Homer Simpson')).toEqual([
-      { page: 1, index: PAGES[0]?.indexOf('Homer Simpson') },
-      { page: 2, index: PAGES[1]?.indexOf('Homer Simpson') },
+    expect(findMatches(PAGES, 'Dermot Cruller')).toEqual([
+      { page: 1, index: PAGES[0]?.indexOf('Dermot Cruller') },
+      { page: 2, index: PAGES[1]?.indexOf('Dermot Cruller') },
     ])
   })
 

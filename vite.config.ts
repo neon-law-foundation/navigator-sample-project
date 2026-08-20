@@ -30,7 +30,7 @@ const MOUNT = '/app/projects/sample-litigation/portal/'
  * and a way to reach the source can get to them.
  */
 const LICENSE_BANNER = `/*!
- * Simpson v. Flanders — Client Portal.
+ * Cruller v. Prine — Client Portal.
  * Copyright (C) 2026 Neon Law Foundation.
  * SPDX-License-Identifier: AGPL-3.0-or-later
  *

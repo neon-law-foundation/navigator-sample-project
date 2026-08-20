@@ -4,7 +4,7 @@
 import type { FeedPost, StatusCell } from './types'
 
 /**
- * The second claim in *Simpson v. Flanders* — fixture data, and nothing else.
+ * The second claim in *Cruller v. Prine* — fixture data, and nothing else.
  *
  * The trespass claim in `matter.ts` is the matter's original pleading. This
  * module carries the count added on amendment: rescission of an alleged
@@ -26,7 +26,7 @@ export const SOUL_CLAIM = {
   filed: '2026-08-03',
 } as const
 
-/** How long Homer sat on it. The defense's entire theory, in one number. */
+/** How long Dermot sat on it. The defense's entire theory, in one number. */
 export const GAP_DAYS = Math.round(
   (Date.parse(SOUL_CLAIM.secondBite) - Date.parse(SOUL_CLAIM.firstBite)) / 86_400_000,
 )
@@ -62,7 +62,7 @@ export interface GraphNode {
   /** The paragraph the detail pane shows on selection. */
   detail: string
   /** Household grouping, used to seed the layout so families land together. */
-  household: 'simpson' | 'flanders' | 'res'
+  household: 'cruller' | 'prine' | 'res'
 }
 
 export type EdgeKind = 'family' | 'adverse' | 'evidence' | 'instrument'
@@ -77,24 +77,24 @@ export interface GraphEdge {
 
 export const GRAPH_NODES: GraphNode[] = [
   {
-    id: 'homer',
-    label: 'Homer J. Simpson',
-    initials: 'HJS',
+    id: 'dermot',
+    label: 'Dermot A. Cruller',
+    initials: 'DAC',
     kind: 'party',
     role: 'Plaintiff · alleged promisor',
     detail:
       'Ate the doughnut in two sittings a year apart. Says he was told the doughnut was "neat" and nothing else, and that he learned of the soul term only after the second bite.',
-    household: 'simpson',
+    household: 'cruller',
   },
   {
-    id: 'ned',
-    label: 'Ned Flanders',
-    initials: 'NF',
+    id: 'wendell',
+    label: 'Wendell Prine',
+    initials: 'WP',
     kind: 'party',
     role: 'Defendant · alleged offeror',
     detail:
-      'Plaintiff alleges Flanders appeared in a horned aspect over the hedge, offered the doughnut, and concealed the operative clause inside the pastry. Flanders denies the aspect and denies concealment.',
-    household: 'flanders',
+      'Plaintiff alleges Prine appeared in a horned aspect over the hedge, offered the doughnut, and concealed the operative clause inside the pastry. Prine denies the aspect and denies concealment.',
+    household: 'prine',
   },
   {
     id: 'doughnut',
@@ -117,101 +117,101 @@ export const GRAPH_NODES: GraphNode[] = [
     household: 'res',
   },
   {
-    id: 'marge',
-    label: 'Marge Simpson',
-    initials: 'MS',
+    id: 'beatrix',
+    label: 'Beatrix Cruller',
+    initials: 'BC',
     kind: 'witness',
     role: 'Spouse · percipient witness',
     detail:
-      'Present at the hedge on 1 April 2025. Expected to testify to what Flanders said and did not say, and to Homer\'s state of knowledge in the intervening year.',
-    household: 'simpson',
+      'Present at the hedge on 1 April 2025. Expected to testify to what Prine said and did not say, and to Dermot\'s state of knowledge in the intervening year.',
+    household: 'cruller',
   },
   {
-    id: 'lisa',
-    label: 'Lisa Simpson',
-    initials: 'LS',
+    id: 'odile',
+    label: 'Odile Cruller',
+    initials: 'OC',
     kind: 'witness',
     role: 'Daughter · contemporaneous notes',
     detail:
-      'Kept a dated notebook. Her entries are the only contemporaneous record of the first bite and the best evidence on when Homer actually discovered the term.',
-    household: 'simpson',
+      'Kept a dated notebook. Her entries are the only contemporaneous record of the first bite and the best evidence on when Dermot actually discovered the term.',
+    household: 'cruller',
   },
   {
-    id: 'bart',
-    label: 'Bart Simpson',
-    initials: 'BS',
+    id: 'linus',
+    label: 'Linus Cruller',
+    initials: 'LC',
     kind: 'witness',
     role: 'Son · witness to the second bite',
     detail:
-      'Says he watched Homer finish the doughnut from the refrigerator on 14 April 2026, and that Homer said nothing about a contract at the time.',
-    household: 'simpson',
+      'Says he watched Dermot finish the doughnut from the refrigerator on 14 April 2026, and that Dermot said nothing about a contract at the time.',
+    household: 'cruller',
   },
   {
-    id: 'maggie',
-    label: 'Maggie Simpson',
-    initials: 'MG',
+    id: 'posy',
+    label: 'Posy Cruller',
+    initials: 'PC',
     kind: 'witness',
     role: 'Daughter · present, non-testifying',
     detail: 'Present at both bites. Not offered as a witness.',
-    household: 'simpson',
+    household: 'cruller',
   },
   {
-    id: 'maude',
-    label: 'Maude Flanders',
-    initials: 'MF',
+    id: 'verity',
+    label: 'Verity Prine',
+    initials: 'VP',
     kind: 'witness',
     role: 'Defendant\'s spouse · adverse witness',
     detail:
       'Expected to testify that the hedge conversation was ordinary neighborly conduct and that no horns were present.',
-    household: 'flanders',
+    household: 'prine',
   },
   {
-    id: 'rod',
-    label: 'Rod Flanders',
-    initials: 'RF',
+    id: 'ambrose',
+    label: 'Ambrose Prine',
+    initials: 'AP',
     kind: 'witness',
     role: 'Defendant\'s son',
-    detail: 'In the Flanders yard on 1 April 2025. Deposition not yet noticed.',
-    household: 'flanders',
+    detail: 'In the Prine yard on 1 April 2025. Deposition not yet noticed.',
+    household: 'prine',
   },
   {
-    id: 'todd',
-    label: 'Todd Flanders',
-    initials: 'TF',
+    id: 'errol',
+    label: 'Errol Prine',
+    initials: 'EP',
     kind: 'witness',
     role: 'Defendant\'s son',
-    detail: 'In the Flanders yard on 1 April 2025. Deposition not yet noticed.',
-    household: 'flanders',
+    detail: 'In the Prine yard on 1 April 2025. Deposition not yet noticed.',
+    household: 'prine',
   },
 ]
 
 export const GRAPH_EDGES: GraphEdge[] = [
-  { source: 'homer', target: 'ned', kind: 'adverse', label: 'Adverse parties' },
-  { source: 'ned', target: 'doughnut', kind: 'instrument', label: 'Offered' },
-  { source: 'homer', target: 'doughnut', kind: 'instrument', label: 'Consumed — twice' },
+  { source: 'dermot', target: 'wendell', kind: 'adverse', label: 'Adverse parties' },
+  { source: 'wendell', target: 'doughnut', kind: 'instrument', label: 'Offered' },
+  { source: 'dermot', target: 'doughnut', kind: 'instrument', label: 'Consumed — twice' },
   { source: 'doughnut', target: 'clause', kind: 'instrument', label: 'Concealed within' },
-  { source: 'ned', target: 'clause', kind: 'adverse', label: 'Drafted · alleged' },
-  { source: 'clause', target: 'homer', kind: 'adverse', label: 'Purports to bind' },
+  { source: 'wendell', target: 'clause', kind: 'adverse', label: 'Drafted · alleged' },
+  { source: 'clause', target: 'dermot', kind: 'adverse', label: 'Purports to bind' },
 
-  { source: 'homer', target: 'marge', kind: 'family', label: 'Spouse' },
-  { source: 'homer', target: 'bart', kind: 'family', label: 'Father' },
-  { source: 'homer', target: 'lisa', kind: 'family', label: 'Father' },
-  { source: 'homer', target: 'maggie', kind: 'family', label: 'Father' },
-  { source: 'marge', target: 'bart', kind: 'family', label: 'Mother' },
-  { source: 'marge', target: 'lisa', kind: 'family', label: 'Mother' },
-  { source: 'marge', target: 'maggie', kind: 'family', label: 'Mother' },
+  { source: 'dermot', target: 'beatrix', kind: 'family', label: 'Spouse' },
+  { source: 'dermot', target: 'linus', kind: 'family', label: 'Father' },
+  { source: 'dermot', target: 'odile', kind: 'family', label: 'Father' },
+  { source: 'dermot', target: 'posy', kind: 'family', label: 'Father' },
+  { source: 'beatrix', target: 'linus', kind: 'family', label: 'Mother' },
+  { source: 'beatrix', target: 'odile', kind: 'family', label: 'Mother' },
+  { source: 'beatrix', target: 'posy', kind: 'family', label: 'Mother' },
 
-  { source: 'ned', target: 'maude', kind: 'family', label: 'Spouse' },
-  { source: 'ned', target: 'rod', kind: 'family', label: 'Father' },
-  { source: 'ned', target: 'todd', kind: 'family', label: 'Father' },
-  { source: 'maude', target: 'rod', kind: 'family', label: 'Mother' },
-  { source: 'maude', target: 'todd', kind: 'family', label: 'Mother' },
+  { source: 'wendell', target: 'verity', kind: 'family', label: 'Spouse' },
+  { source: 'wendell', target: 'ambrose', kind: 'family', label: 'Father' },
+  { source: 'wendell', target: 'errol', kind: 'family', label: 'Father' },
+  { source: 'verity', target: 'ambrose', kind: 'family', label: 'Mother' },
+  { source: 'verity', target: 'errol', kind: 'family', label: 'Mother' },
 
-  { source: 'marge', target: 'doughnut', kind: 'evidence', label: 'Witnessed the offer' },
-  { source: 'lisa', target: 'doughnut', kind: 'evidence', label: 'Dated notes' },
-  { source: 'bart', target: 'doughnut', kind: 'evidence', label: 'Witnessed the second bite' },
-  { source: 'maude', target: 'doughnut', kind: 'evidence', label: 'Denies the offer' },
-  { source: 'marge', target: 'maude', kind: 'evidence', label: 'Neighbors — conflicting accounts' },
+  { source: 'beatrix', target: 'doughnut', kind: 'evidence', label: 'Witnessed the offer' },
+  { source: 'odile', target: 'doughnut', kind: 'evidence', label: 'Dated notes' },
+  { source: 'linus', target: 'doughnut', kind: 'evidence', label: 'Witnessed the second bite' },
+  { source: 'verity', target: 'doughnut', kind: 'evidence', label: 'Denies the offer' },
+  { source: 'beatrix', target: 'verity', kind: 'evidence', label: 'Neighbors — conflicting accounts' },
 ]
 
 /** Human-readable names for the edge kinds, used by the legend and filter. */
@@ -230,25 +230,25 @@ export const CHRONOLOGY: FeedPost[] = [
     id: 'offer',
     date: '2025-04-01',
     dateLabel: '1 April 2025',
-    actor: 'Ned Flanders',
+    actor: 'Wendell Prine',
     role: 'Defendant · at the hedge',
-    initials: 'NF',
+    initials: 'WP',
     accent: 'danger',
     kind: 'Offer',
     title: 'The doughnut is offered over the hedge',
-    body: 'Plaintiff alleges Flanders presented the doughnut in a horned aspect and described it only as "neat." No soul term was spoken aloud. Marge Simpson was present.',
+    body: 'Plaintiff alleges Prine presented the doughnut in a horned aspect and described it only as "neat." No soul term was spoken aloud. Beatrix Cruller was present.',
   },
   {
     id: 'first-bite',
     date: '2025-04-01',
     dateLabel: '1 April 2025',
-    actor: 'Homer J. Simpson',
+    actor: 'Dermot A. Cruller',
     role: 'Plaintiff',
-    initials: 'HJS',
+    initials: 'DAC',
     accent: 'brand',
     kind: 'Performance',
     title: 'The first bite — a small one',
-    body: 'Homer takes a partial bite and sets the remainder aside. Whether this bite alone accepted anything is the formation question the whole count turns on.',
+    body: 'Dermot takes a partial bite and sets the remainder aside. Whether this bite alone accepted anything is the formation question the whole count turns on.',
   },
   {
     id: 'dormant',
@@ -260,30 +260,30 @@ export const CHRONOLOGY: FeedPost[] = [
     accent: 'neutral',
     kind: 'Dormancy',
     title: `${GAP_DAYS} days pass with the doughnut in the refrigerator`,
-    body: 'No demand, no performance, no mention of a soul by either side. Flanders says this silence is acquiescence. Homer says nothing happened because he did not yet know anything had.',
+    body: 'No demand, no performance, no mention of a soul by either side. Prine says this silence is acquiescence. Dermot says nothing happened because he did not yet know anything had.',
   },
   {
     id: 'second-bite',
     date: '2026-04-14',
     dateLabel: '14 April 2026',
-    actor: 'Homer J. Simpson',
+    actor: 'Dermot A. Cruller',
     role: 'Plaintiff · hungry',
-    initials: 'HJS',
+    initials: 'DAC',
     accent: 'warning',
     kind: 'Performance',
     title: 'The remainder is eaten',
-    body: 'Homer finishes the doughnut. Bart Simpson witnesses it. This is the act Flanders characterizes as ratification — and the single most dangerous fact in the count.',
+    body: 'Dermot finishes the doughnut. Linus Cruller witnesses it. This is the act Prine characterizes as ratification — and the single most dangerous fact in the count.',
   },
   {
     id: 'discovery',
     date: '2026-04-15',
     dateLabel: '15 April 2026',
-    actor: 'Homer J. Simpson',
+    actor: 'Dermot A. Cruller',
     role: 'Plaintiff',
-    initials: 'HJS',
+    initials: 'DAC',
     accent: 'link',
     kind: 'Discovery',
-    title: 'Homer learns of the soul term',
+    title: 'Dermot learns of the soul term',
     body: 'The day after the doughnut is gone. If the trier accepts this date, the limitations clock and the ratification analysis both start here rather than at the first bite.',
   },
   {
@@ -302,13 +302,13 @@ export const CHRONOLOGY: FeedPost[] = [
     id: 'notice',
     date: '2026-05-02',
     dateLabel: '2 May 2026',
-    actor: 'Simpson',
+    actor: 'Cruller',
     role: 'Through counsel',
-    initials: 'HJS',
+    initials: 'DAC',
     accent: 'success',
     kind: 'Notice',
     title: 'Notice of rescission served',
-    body: 'Seventeen days after discovery. Prompt notice on discovery is what defeats a laches defense, and it is the strongest procedural fact Homer has.',
+    body: 'Seventeen days after discovery. Prompt notice on discovery is what defeats a laches defense, and it is the strongest procedural fact Dermot has.',
   },
   {
     id: 'amended',
@@ -332,8 +332,8 @@ export interface Issue {
   title: string
   tone: 'ready' | 'wait' | 'risk' | 'default'
   question: string
-  homer: string
-  ned: string
+  dermot: string
+  wendell: string
   reading: string
 }
 
@@ -352,11 +352,11 @@ export const ISSUES: Issue[] = [
     tone: 'wait',
     question:
       'An offer inviting acceptance by performance is not accepted until performance is complete — beginning it only makes the offer irrevocable while the offeree carries on. If eating the doughnut was the performance, a partial bite began it and did not close it.',
-    homer:
-      'Nothing was formed on 1 April 2025. A bite is the start of a performance, not an acceptance of it, and Homer was free to stop — which he did, for a year.',
-    ned: 'The bite was the acceptance. The doughnut was delivered and accepted; the rest is only consumption of what was already his.',
+    dermot:
+      'Nothing was formed on 1 April 2025. A bite is the start of a performance, not an acceptance of it, and Dermot was free to stop — which he did, for a year.',
+    wendell: 'The bite was the acceptance. The doughnut was delivered and accepted; the rest is only consumption of what was already his.',
     reading:
-      'Homer has the better of this, and it matters more than it looks: if formation waited for the second bite, the year of silence is not delay at all.',
+      'Dermot has the better of this, and it matters more than it looks: if formation waited for the second bite, the year of silence is not delay at all.',
   },
   {
     id: 'concealment',
@@ -365,9 +365,9 @@ export const ISSUES: Issue[] = [
     tone: 'ready',
     question:
       'Assent runs to the terms a party had a reasonable opportunity to read. A material term the offeree physically cannot reach before performing is not one of them, and affirmatively describing the instrument as merely "neat" turns silence into misrepresentation.',
-    homer:
-      'No meeting of the minds on the operative term, and an affirmative misdescription on top of it. Voidable at Homer\'s election.',
-    ned: 'The term was in the instrument. Homer chose not to inspect what he was eating.',
+    dermot:
+      'No meeting of the minds on the operative term, and an affirmative misdescription on top of it. Voidable at Dermot\'s election.',
+    wendell: 'The term was in the instrument. Dermot chose not to inspect what he was eating.',
     reading:
       'The strongest ground in the count. Concealment of a material term plus an affirmative gloss is fraudulent inducement on any state\'s formulation.',
   },
@@ -378,11 +378,11 @@ export const ISSUES: Issue[] = [
     tone: 'risk',
     question:
       'A contract voidable for fraud can be affirmed by conduct — but ratification requires knowledge of the facts that made it voidable. Accepting a benefit in ignorance affirms nothing.',
-    homer:
-      'On 14 April 2026 Homer knew only that he was hungry. He learned of the soul term the next day and served notice within seventeen. Ignorant consumption is not affirmance.',
-    ned: 'He took the whole benefit of the bargain a year in. A party cannot eat the consideration and then disclaim the deal.',
+    dermot:
+      'On 14 April 2026 Dermot knew only that he was hungry. He learned of the soul term the next day and served notice within seventeen. Ignorant consumption is not affirmance.',
+    wendell: 'He took the whole benefit of the bargain a year in. A party cannot eat the consideration and then disclaim the deal.',
     reading:
-      'The count lives or dies here, and it is a fact question, not a legal one. Everything depends on what Homer knew on 14 April — which is why Lisa\'s dated notebook is the most valuable document in the matter.',
+      'The count lives or dies here, and it is a fact question, not a legal one. Everything depends on what Dermot knew on 14 April — which is why Odile\'s dated notebook is the most valuable document in the matter.',
   },
   {
     id: 'limitations',
@@ -391,9 +391,9 @@ export const ISSUES: Issue[] = [
     tone: 'ready',
     question:
       'A fraud claim in Nevada runs three years, and the discovery rule starts it when the aggrieved party discovers the facts constituting the fraud — not when the transaction occurred.',
-    homer:
+    dermot:
       'Even measured from the first bite, the claim is filed inside three years. Measured from discovery it is barely four months old.',
-    ned: 'Delay alone; no independent limitations bar available.',
+    wendell: 'Delay alone; no independent limitations bar available.',
     reading:
       'Not a real obstacle on these dates. The gap is a ratification and laches problem dressed up as a limitations problem — and prompt notice answers the laches half.',
   },
@@ -404,9 +404,9 @@ export const ISSUES: Issue[] = [
     tone: 'ready',
     question:
       'Rescission unwinds a bargain and restores the parties. A promise with no cognizable subject matter, or one so one-sided that no honest party would propose it, fails before rescission is even reached.',
-    homer:
+    dermot:
       'A soul is not property a court can transfer, value, or order delivered. And one doughnut against a soul is unconscionable on its face.',
-    ned: 'The parties set their own price; courts do not weigh adequacy of consideration.',
+    wendell: 'The parties set their own price; courts do not weigh adequacy of consideration.',
     reading:
       'Courts do not weigh adequacy — but they do notice a disparity this extreme as evidence of the overreaching alleged in step two. Plead it as the fallback, argue it as corroboration.',
   },
@@ -416,6 +416,6 @@ export const ISSUES: Issue[] = [
 export const BOTTOM_LINE = {
   answer: 'Yes — the year is not what defeats him.',
   because:
-    'The clock on rescission runs from discovery of the concealed term, not from the first bite, and the claim is comfortably inside it. The gap only hurts Homer if the second bite was a knowing acceptance of a bargain he understood — and on the pleaded facts he learned of the soul term the day after the doughnut was gone.',
-  risk: 'Everything rests on Homer\'s state of knowledge on 14 April 2026. If discovery is placed any earlier than the second bite, the second bite becomes ratification and the count fails.',
+    'The clock on rescission runs from discovery of the concealed term, not from the first bite, and the claim is comfortably inside it. The gap only hurts Dermot if the second bite was a knowing acceptance of a bargain he understood — and on the pleaded facts he learned of the soul term the day after the doughnut was gone.',
+  risk: 'Everything rests on Dermot\'s state of knowledge on 14 April 2026. If discovery is placed any earlier than the second bite, the second bite becomes ratification and the count fails.',
 }

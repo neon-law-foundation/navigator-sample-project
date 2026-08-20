@@ -39,16 +39,16 @@ workflow:
 # NOTICE OF RESCISSION
 
 __FIXTURE DOCUMENT.__ This is a sample rendered from a notation template in the
-Navigator sample project. _Simpson v. Flanders_ is a simulated matter, this
+Navigator sample project. _Cruller v. Prine_ is a simulated matter, this
 notice is addressed to no one, and nothing in it is legal advice.
 
-__To:__ Ned Flanders
+__To:__ Wendell Prine
 
 __From:__ {{person__client}}
 
 __Date:__ {{custom_datetime__notice_date}}
 
-__Matter:__ Simpson v. Flanders — Count II
+__Matter:__ Cruller v. Prine — Count II
 
 ## 1. The instrument
 

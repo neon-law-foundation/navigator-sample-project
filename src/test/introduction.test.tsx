@@ -44,7 +44,7 @@ describe('the introduction to Count II', () => {
     expect(
       screen.getByRole('heading', { level: 1, name: 'Rescission of the Doughnut Instrument' }),
     ).toBeInTheDocument()
-    expect(screen.getByText(/COUNT II · SIMPSON V\. FLANDERS/i)).toBeInTheDocument()
+    expect(screen.getByText(/COUNT II · CRULLER V\. PRINE/i)).toBeInTheDocument()
   })
 
   it('offers every section as a tab, with the introduction open first', () => {

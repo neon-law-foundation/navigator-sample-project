@@ -98,7 +98,7 @@ export const GLOSSARY: GlossaryTerm[] = [
     anchor: 'entity',
     definition:
       'A legal organization — an LLC, trust, corporation — with a type and a jurisdiction. Every Project is opened against one, and a solo natural person gets a `Human` entity rather than an exception to the rule.',
-    here: 'The fixture opens `sample-litigation` against a `Human` entity named "Simpson Plaintiff" in Nevada. A one-plaintiff trespass claim still has an organization row behind it, which is the rule made visible.',
+    here: 'The fixture opens `sample-litigation` against a `Human` entity named "Dermot Cruller" in Nevada. A one-plaintiff trespass claim still has an organization row behind it, which is the rule made visible.',
     see: ['project', 'person'],
   },
   {
@@ -108,7 +108,7 @@ export const GLOSSARY: GlossaryTerm[] = [
     anchor: 'person',
     definition:
       'A human contact, and a row that can sign in. The system-wide tier — owner, admin, lawyer, clerk, or client — lives on that row and not on the OIDC token: the token carries a subject and an email, and the tier is read from the database.',
-    here: 'Five of them, written by Navigator\'s dev seed and listed on the People tab. None of them is Homer Simpson: the parties in the pleaded facts are not Navigator Persons, and saying so is most of what `src/people.ts` is for.',
+    here: 'Five of them, written by Navigator\'s dev seed and listed on the People tab. None of them is Dermot Cruller: the parties in the pleaded facts are not Navigator Persons, and saying so is most of what `src/people.ts` is for.',
     see: ['participation', 'person-project-role', 'dri'],
   },
   {
@@ -139,7 +139,7 @@ export const GLOSSARY: GlossaryTerm[] = [
     anchor: 'directly-responsible-individual-dri',
     definition:
       'The one person on each side who answers for a matter — one lawyer at the firm, one person at the client. Others work on it; these two answer for it.',
-    here: 'The seed designates Lawrence Lawyer as Firm DRI and Cleo Client as Client DRI. Section 4 of the engagement letter names the same lawyer — and names Homer J. Simpson on the client side, because the document speaks about the party while the designation records the account. Two DRIs on one side is the People tab\'s whole point, not a discrepancy.',
+    here: 'The seed designates Lawrence Lawyer as Firm DRI and Cleo Client as Client DRI. Section 4 of the engagement letter names the same lawyer — and names Dermot A. Cruller on the client side, because the document speaks about the party while the designation records the account. Two DRIs on one side is the People tab\'s whole point, not a discrepancy.',
     see: ['person', 'engagement'],
   },
   {
@@ -150,7 +150,7 @@ export const GLOSSARY: GlossaryTerm[] = [
     anchor: 'engagement--retainer',
     definition:
       'Client English for a Notation bound to a Project — what the firm sells. It is a matter\'s **first** Notation: the Project is opened first, and the engagement is created on it afterwards like any other. Opening a Project never opens one with it.',
-    here: 'The engagement letter on the documents tab, rendered from a template whose `kind:` is `retainer`. It is dated 20 April 2026 — five days after Homer learned of the soul term, and twelve before a notice goes out "through counsel".',
+    here: 'The engagement letter on the documents tab, rendered from a template whose `kind:` is `retainer`. It is dated 20 April 2026 — five days after Dermot learned of the soul term, and twelve before a notice goes out "through counsel".',
     see: ['notation', 'template', 'project'],
   },
   {
@@ -226,11 +226,11 @@ export const GLOSSARY: GlossaryTerm[] = [
   },
   {
     id: 'fixture',
-    term: 'Simpsons Development Fixture',
+    term: 'Cruller Development Fixture',
     source: 'glossary',
-    anchor: 'simpsons-development-fixture',
+    anchor: 'cruller-development-fixture',
     definition:
-      'The one synthetic matter a local Navigator applies on top of its canonical seed. It is idempotent, `dev`-only, and disposable, and it keeps the local accounts and *Simpson v. Flanders* ready for the firm, clerk, and client surfaces.',
+      'The one synthetic matter a local Navigator applies on top of its canonical seed. It is idempotent, `dev`-only, and disposable, and it keeps the local accounts and *Cruller v. Prine* ready for the firm, clerk, and client surfaces.',
     here: 'It is the reason this repository exists. The companion application named by that fixture is this one, refreshed on local boot and served at the portal path — so every code, claim, and jurisdiction in `src/matter.ts` matches the seed on purpose.',
     see: ['project', 'person'],
   },

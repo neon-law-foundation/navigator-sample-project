@@ -178,7 +178,7 @@ function Overview() {
             </CardHeader>
             <CardContent className="space-y-4 text-[0.95rem] leading-relaxed">
               <p>
-                A second count is now before the court: whether Homer Simpson may rescind an alleged
+                A second count is now before the court: whether Dermot Cruller may rescind an alleged
                 contract conveying his soul, given in exchange for a doughnut he ate in two sittings
                 a year apart.
               </p>

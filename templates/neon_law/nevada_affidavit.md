@@ -35,12 +35,12 @@ workflow:
 # AFFIDAVIT OF PERCIPIENT WITNESS
 
 __FIXTURE DOCUMENT.__ This is a sample rendered from a notation template in the
-Navigator sample project. _Simpson v. Flanders_ is a simulated matter, no person
+Navigator sample project. _Cruller v. Prine_ is a simulated matter, no person
 described here exists, and nothing in it is legal advice or sworn testimony.
 
-__Matter:__ Simpson v. Flanders — Count II
+__Matter:__ Cruller v. Prine — Count II
 
-__Affiant:__ Lisa Simpson
+__Affiant:__ Odile Cruller
 
 __Concerning:__ {{person__client}}
 
@@ -79,6 +79,6 @@ On {{custom_datetime__discovery_date}} my father stated for the first time that
 the doughnut had carried a term concerning his soul. He appeared to be learning
 it rather than recalling it.
 
-Lisa Simpson
+Odile Cruller
 
 Subscribed and sworn before me: ______________________________
