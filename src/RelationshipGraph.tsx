@@ -95,7 +95,7 @@ const EDGE_DASH: Record<EdgeKind, string | undefined> = {
  *
  * The instrument is the shortest — it should read as sitting between the two
  * parties rather than off to one side — but not so short that the doughnut and
- * Homer overlap, which is what a distance under about 140 produced.
+ * Dermot overlap, which is what a distance under about 140 produced.
  */
 const EDGE_DISTANCE: Record<EdgeKind, number> = {
   adverse: 190,
@@ -120,16 +120,16 @@ function isResolved(edge: SimEdge): edge is ResolvedEdge {
 /**
  * Seed x by household so the two families settle on opposite sides.
  *
- * Without this the layout is correct but arbitrary — the Simpsons and the
- * Flanderses interleave differently on every load, and a reader who looks twice
+ * Without this the layout is correct but arbitrary — the Crullers and the
+ * Prines interleave differently on every load, and a reader who looks twice
  * sees two unrelated pictures. Pinning the horizontal bias makes the shape
  * stable and, more usefully, makes "the doughnut sits between the households"
  * a thing the picture says rather than a coincidence.
  */
 const HOUSEHOLD_X: Record<GraphNode['household'], number> = {
-  simpson: WIDTH * 0.24,
+  cruller: WIDTH * 0.24,
   res: WIDTH * 0.5,
-  flanders: WIDTH * 0.76,
+  prine: WIDTH * 0.76,
 }
 
 /**

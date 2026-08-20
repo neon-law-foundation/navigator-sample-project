@@ -19,8 +19,8 @@
 
 /** The fake document's text, one entry per page. */
 export const PAGES = [
-  'Notice of Rescission. Homer Simpson gives notice that the instrument is rescinded.',
-  'The doughnut was consumed in two sittings. Homer Simpson rescinds the whole of it.',
+  'Notice of Rescission. Dermot Cruller gives notice that the instrument is rescinded.',
+  'The doughnut was consumed in two sittings. Dermot Cruller rescinds the whole of it.',
 ]
 
 interface Viewport {

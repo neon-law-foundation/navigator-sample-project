@@ -13,7 +13,7 @@
  *    reach the portal. Navigator's dev seed writes exactly five of them
  *    (`store::seed::seed_role_matrix_sample`), and the five below are those
  *    five, spelled the way the seed spells them.
- * 2. **People in the pleaded facts.** Homer, Ned, and the two households. They
+ * 2. **People in the pleaded facts.** Dermot, Wendell, and the two households. They
  *    are parties and witnesses in a simulated dispute. Most of them are not
  *    Navigator Persons at all, and none of them can sign in.
  *
@@ -135,7 +135,7 @@ export const NAVIGATOR_PEOPLE: NavigatorPerson[] = [
  * one-plaintiff trespass claim still has an organization row behind it.
  */
 export const MATTER_ENTITY = {
-  name: 'Simpson Plaintiff',
+  name: 'Dermot Cruller',
   entityType: 'Human',
   jurisdiction: 'Nevada',
 } as const
@@ -143,7 +143,7 @@ export const MATTER_ENTITY = {
 /* ------------------------------------------------- people in the fixture */
 
 /** Which side of the dispute a person in the pleaded facts stands on. */
-export type Household = 'simpson' | 'flanders'
+export type Household = 'cruller' | 'prine'
 
 /** How a person in the facts is expected to reach the record, if at all. */
 export type Standing = 'party' | 'witness' | 'non-testifying'
@@ -174,44 +174,44 @@ export interface MatterPerson {
  */
 const CAST: Omit<MatterPerson, 'name' | 'role' | 'detail' | 'household'>[] = [
   {
-    id: 'homer',
+    id: 'dermot',
     standing: 'party',
     signsIn: false,
     evidence: 'His own account of what he knew on 14 April 2026 — the fact Count II turns on.',
   },
   {
-    id: 'marge',
+    id: 'beatrix',
     standing: 'witness',
     signsIn: false,
-    evidence: 'What was said at the hedge, and Homer\'s state of knowledge across the year.',
+    evidence: 'What was said at the hedge, and Dermot\'s state of knowledge across the year.',
   },
   {
-    id: 'lisa',
+    id: 'odile',
     standing: 'witness',
     signsIn: false,
     evidence: 'The dated notebook, sworn to in the affidavit on the documents tab.',
   },
   {
-    id: 'bart',
+    id: 'linus',
     standing: 'witness',
     signsIn: false,
-    evidence: 'The second bite, and that Homer said nothing about a contract while taking it.',
+    evidence: 'The second bite, and that Dermot said nothing about a contract while taking it.',
   },
-  { id: 'maggie', standing: 'non-testifying', signsIn: false },
+  { id: 'posy', standing: 'non-testifying', signsIn: false },
   {
-    id: 'ned',
+    id: 'wendell',
     standing: 'party',
     signsIn: false,
     evidence: 'Denies the horned aspect and denies concealment. Deposition noticed.',
   },
   {
-    id: 'maude',
+    id: 'verity',
     standing: 'witness',
     signsIn: false,
     evidence: 'That the hedge conversation was ordinary neighborly conduct.',
   },
-  { id: 'rod', standing: 'witness', signsIn: false, evidence: 'In the yard. Not yet noticed.' },
-  { id: 'todd', standing: 'witness', signsIn: false, evidence: 'In the yard. Not yet noticed.' },
+  { id: 'ambrose', standing: 'witness', signsIn: false, evidence: 'In the yard. Not yet noticed.' },
+  { id: 'errol', standing: 'witness', signsIn: false, evidence: 'In the yard. Not yet noticed.' },
 ]
 
 /**
@@ -242,13 +242,13 @@ export const MATTER_PEOPLE: MatterPerson[] = CAST.map((entry) => {
 /** The households, for grouping the roster. */
 export const HOUSEHOLDS: { id: Household; label: string; note: string }[] = [
   {
-    id: 'simpson',
-    label: 'Simpson',
-    note: 'The client side. Homer is the plaintiff; the rest of the household are his witnesses.',
+    id: 'cruller',
+    label: 'Cruller',
+    note: 'The client side. Dermot is the plaintiff; the rest of the household are his witnesses.',
   },
   {
-    id: 'flanders',
-    label: 'Flanders',
+    id: 'prine',
+    label: 'Prine',
     note: 'Adverse. Contact runs through the defendant\'s counsel, never directly.',
   },
 ]
@@ -262,4 +262,4 @@ export const HOUSEHOLDS: { id: Household; label: string; note: string }[] = [
  * one of them decides what you can see.
  */
 export const TWO_ROSTERS_NOTE =
-  'Homer Simpson is the plaintiff and has no account. Cleo Client has an account and is not the plaintiff. Both statements are true at once, because participation is a property of a Person–Project Role row and a party is a fact in a pleading — and Navigator never lets the second one grant the first.'
+  'Dermot Cruller is the plaintiff and has no account. Cleo Client has an account and is not the plaintiff. Both statements are true at once, because participation is a property of a Person–Project Role row and a party is a fact in a pleading — and Navigator never lets the second one grant the first.'

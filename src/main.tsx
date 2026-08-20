@@ -1,7 +1,7 @@
 /**
  * @license
  * navigator-sample-project — the reference project application for Navigator:
- * a client portal for the fixture matter Simpson v. Flanders.
+ * a client portal for the fixture matter Cruller v. Prine.
  *
  * Copyright (C) 2026 Neon Law Foundation.
  *

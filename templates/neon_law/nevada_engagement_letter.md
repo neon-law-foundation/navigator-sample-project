@@ -56,7 +56,7 @@ workflow:
 # ENGAGEMENT LETTER
 
 __FIXTURE DOCUMENT.__ This is a sample rendered from a notation template in the
-Navigator sample project. _Simpson v. Flanders_ is a simulated matter, no person
+Navigator sample project. _Cruller v. Prine_ is a simulated matter, no person
 named here exists, no lawyer is engaged by anyone on the strength of this page,
 and nothing in it is legal advice.
 
@@ -64,7 +64,7 @@ __Date:__ {{custom_datetime__engagement_start_date}}
 
 __To:__ {{person__client}}
 
-__Re:__ Engagement to provide legal services — Simpson v. Flanders
+__Re:__ Engagement to provide legal services — Cruller v. Prine
 
 Dear {{person__client}}:
 

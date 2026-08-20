@@ -7,11 +7,11 @@ import { describe, expect, it } from 'vitest'
 import { App } from '../App'
 import { MOUNT } from '../mount'
 
-describe('the Simpson v. Flanders portal', () => {
+describe('the Cruller v. Prine portal', () => {
   it('renders the matter, its claim, and what the client is asked to do next', () => {
     render(<App />)
 
-    expect(screen.getByRole('heading', { level: 1, name: 'Simpson v. Flanders' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { level: 1, name: 'Cruller v. Prine' })).toBeInTheDocument()
     expect(screen.getByText(/Trespass to land · Nevada/)).toBeInTheDocument()
     expect(screen.getByRole('heading', { name: 'Where things stand' })).toBeInTheDocument()
 
@@ -24,7 +24,7 @@ describe('the Simpson v. Flanders portal', () => {
     render(<App />)
 
     expect(
-      screen.getByText('Fixture data only — Simpson v. Flanders is a simulated matter.'),
+      screen.getByText('Fixture data only — Cruller v. Prine is a simulated matter.'),
     ).toBeInTheDocument()
     expect(screen.getByRole('heading', { name: 'Legal notice' })).toBeInTheDocument()
   })
