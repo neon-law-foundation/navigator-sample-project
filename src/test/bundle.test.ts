@@ -95,7 +95,8 @@ describe('the built bundle', () => {
     // than build output, so nothing in `vite build` would notice them going
     // missing — this is the check that would.
     const names = Object.keys(pdfs).map((path) => path.split('/').pop())
-    expect(names, BUILD_FIRST).toContain('notice-of-rescission.pdf')
+    expect(names, BUILD_FIRST).toContain('engagement-letter-homer-simpson.pdf')
+    expect(names).toContain('notice-of-rescission.pdf')
     expect(names).toContain('affidavit-lisa-simpson.pdf')
   })
 

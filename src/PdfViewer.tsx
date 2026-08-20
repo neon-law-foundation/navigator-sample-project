@@ -31,7 +31,7 @@ import { cn } from '@/lib/utils'
  * library's is a leaf component by its own contract — it takes a `src` and a
  * `label` and renders a page — which is the right shape for a library and the
  * wrong one for this tab, where the viewer has to answer questions about a
- * matter: find a phrase across both pages, hold a zoom while the reader
+ * matter: find a phrase across every page of a document, hold a zoom while the reader
  * switches documents, and degrade to a plain link when pdf.js cannot start.
  * Owning it here means those behaviors are editable rather than wrapped.
  *
@@ -39,6 +39,24 @@ import { cn } from '@/lib/utils'
  * component is the chrome around it: paint a page to canvas, lay the selectable
  * text over it, and keep the two in step through every zoom and page change.
  */
+
+/*
+ * `set-state-in-effect` is off for this file, and only this file.
+ *
+ * The rule is right in general: an effect that sets state during the same
+ * commit is usually a value that should have been derived during render. Here it
+ * is not. Every effect below synchronizes with pdf.js — opening a document,
+ * painting a page, extracting page text — and each of those is asynchronous work
+ * against an external system whose result cannot be computed while rendering. A
+ * document that has not loaded yet has no page count to derive anything from.
+ *
+ * The rule's own advice ("use an effect only when synchronizing with an external
+ * system") is exactly what this component does, which is why the suppression is
+ * a file-level statement about what the file is rather than three scattered
+ * apologies. It is scoped to this file so the rule keeps guarding the rest of
+ * the app, where there is no external system to synchronize with.
+ */
+/* oxlint-disable react/set-state-in-effect */
 
 const MIN_SCALE = 0.5
 const MAX_SCALE = 4

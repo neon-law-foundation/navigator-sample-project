@@ -141,15 +141,18 @@ index.html                  the Vite template — no inline script, ever
 src/main.tsx                the entry: the stylesheet, imported once, and the mount
 src/index.css               Tailwind, plus the teal theme every component reads
 src/App.tsx                 the shell, the fragment router, and the overview
-src/IntroductionPage.tsx    Count II — six tabs
+src/IntroductionPage.tsx    Count II — eight tabs
 src/RelationshipGraph.tsx   the force-directed party/evidence web
 src/PdfViewer.tsx           the document viewer: canvas, text layer, find bar
 src/pdf.ts                  the pdf.js seam — worker wiring, opening, text extraction
 src/art.tsx                 original inline SVG illustrations
+src/inline.tsx              two marks of inline Markdown, for prose held as data
 src/components/ui/*         shadcn-style components, owned here
 src/lib/utils.ts            `cn()` — clsx plus tailwind-merge
 src/matter.ts               the fixture data for the trespass count
 src/soulContract.ts         the fixture data for Count II, including the graph
+src/people.ts               who may read the matter, and who the matter is about
+src/glossary.ts             Navigator's vocabulary, scoped to this bundle
 src/research.ts             the authorities — real law, verified before it was written down
 src/documents.ts            the rendered PDFs and the templates behind them
 src/mount.ts                links derived from the base rather than written out
@@ -178,17 +181,31 @@ a notation template in `templates/neon_law/` — Markdown carrying a questionnai
 frontmatter. The renderer validates against the same rule set as `navigator validate` and refuses a template
 with any violation, so a PDF that exists is a template that passed.
 
+There are three: the engagement letter that opens the representation, the notice of rescission served on the
+defendant, and the affidavit of the witness whose notebook the count turns on. The engagement letter is the one
+that declares a **render profile** — `output: letter` in its frontmatter — so it arrives on Neon Law
+letterhead while the other two render as plain pages. That key is the one place a template says what the
+finished document should look like, which is why `MatterDocument.format` carries it to the card rather than
+letting the component guess from the title.
+
 They are **committed rather than generated during `vite build`**: this bundle has to build on a machine that
 has never installed the Navigator CLI, and CI should not need a Rust toolchain to ship a React app. Re-run
-`pnpm render:documents` whenever a template changes. `src/test/bundle.test.ts` asserts both PDFs reach `dist/`,
-since nothing in the Vite build would notice them going missing.
+`pnpm render:documents` whenever a template changes. `src/test/bundle.test.ts` asserts all three PDFs reach
+`dist/`, since nothing in the Vite build would notice them going missing.
+
+`pnpm validate:templates` is the check that keeps the templates renderable, and for the same reason it is
+**not in CI** — it needs the Navigator CLI, and a React build should not wait on a Rust toolchain. So run it
+locally whenever a template changes. The notation rule set is versioned in Navigator rather than here, which
+means a template can stop validating without anything in this repository changing: that is exactly what
+happened to the `staff_review` workflow state these templates used to carry, before `N106` began requiring the
+`lawyer_review` gate that every one of them now names.
 
 ### The viewer is ours
 
 The documents tab reads its PDFs in a viewer this repository owns — `src/PdfViewer.tsx` — rather than in the
 browser's built-in one or in the `PdfViewer` that navigator-ux ships. The library's is a leaf component by its
 own contract: it takes a `src` and a `label` and renders a page. That is the right shape for a library and the
-wrong one for this tab, where the viewer has to find a phrase across both pages, hold a zoom while the reader
+wrong one for this tab, where the viewer has to find a phrase across every page of a document, hold a zoom while the reader
 switches documents, and degrade to a plain link when it cannot start. Owning it means those behaviors are
 editable rather than wrapped.
 
@@ -213,6 +230,27 @@ The find bar counts hits in the text pdf.js reports for each page, and highlight
 rendered text layer. Those two can disagree: a match straddling two positioned runs is counted and turns the
 page, but arrives unmarked. Counting from the page text rather than from the runs is what keeps the tally
 honest in that case.
+
+### The people, and the glossary
+
+Two data files answer questions the graph cannot.
+
+`src/people.ts` holds two rosters that look alike and mean entirely different things. One is the **Navigator
+Persons** — rows that can sign in, each with a system-wide tier and a participation row on this Project. The
+other is the **cast in the pleaded facts**, the Simpson and Flanders households. Homer Simpson is the plaintiff
+and has no account; Cleo Client has an account and is not the plaintiff. Keeping those two facts side by side
+is the point of the file: participation is a property of a Person–Project Role row, a party is a fact in a
+pleading, and Navigator never lets the second grant the first. The Navigator Persons are the five the
+development seed writes, spelled the way it spells them — including the Admin who deliberately gets no
+participation row and therefore cannot reach this matter at all.
+
+`src/glossary.ts` is the vocabulary, scoped. Navigator keeps **one** canonical glossary, in its own repository,
+and this file does not compete with it: each entry paraphrases what Navigator means by a word, says what that
+word is *here* — which file, which path, which fixture row — and links to the canonical definition, which
+governs if the two ever disagree. It exists because the same word means a pleading to a lawyer and a table to
+this codebase. Matter and Project are one row. Person is a login, not a party. Letter is a piece of mail in the
+schema and a render profile in a template's frontmatter. A contributor who has not been told that reads every
+file in this repository slightly wrong.
 
 ### The authorities are real
 

@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import {
+  BookMarked,
   BookOpen,
   CalendarClock,
   CircleDot,
@@ -9,13 +10,23 @@ import {
   FileText,
   Network,
   Scale,
+  Users,
 } from 'lucide-react'
 import { useState } from 'react'
 
 import { Doughnut, HedgeScene, type BiteState } from './art'
 import { DOCUMENTS, type MatterDocument } from './documents'
+import { canonicalUrl, GLOSSARY, GLOSSARY_NOTE } from './glossary'
+import { Inline } from './inline'
 import { MATTER } from './matter'
 import { portalPath } from './mount'
+import {
+  HOUSEHOLDS,
+  MATTER_ENTITY,
+  MATTER_PEOPLE,
+  NAVIGATOR_PEOPLE,
+  TWO_ROSTERS_NOTE,
+} from './people'
 import { PdfViewer } from './PdfViewer'
 import { READY_KICKER } from './ready'
 import { RelationshipGraph } from './RelationshipGraph'
@@ -73,8 +84,9 @@ import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 /**
  * Count II: the introduction to the case.
  *
- * Six tabs, in the order a reader needs them — what happened, who is involved,
- * when, what it turns on, what the law says, and what has been filed.
+ * Eight tabs, in the order a reader needs them — what happened, who is
+ * involved, who may read it, when, what it turns on, what the law says, what
+ * has been signed and filed, and what the words mean.
  */
 export function IntroductionPage() {
   return (
@@ -129,6 +141,9 @@ export function IntroductionPage() {
           <TabsTrigger value="web">
             <Network /> The web
           </TabsTrigger>
+          <TabsTrigger value="people">
+            <Users /> People
+          </TabsTrigger>
           <TabsTrigger value="when">
             <CalendarClock /> Chronology
           </TabsTrigger>
@@ -141,6 +156,9 @@ export function IntroductionPage() {
           <TabsTrigger value="documents">
             <FileText /> Documents
           </TabsTrigger>
+          <TabsTrigger value="glossary">
+            <BookMarked /> Glossary
+          </TabsTrigger>
         </TabsList>
 
         <TabsContent value="story">
@@ -148,6 +166,9 @@ export function IntroductionPage() {
         </TabsContent>
         <TabsContent value="web">
           <WebTab />
+        </TabsContent>
+        <TabsContent value="people">
+          <PeopleTab />
         </TabsContent>
         <TabsContent value="when">
           <ChronologyTab />
@@ -160,6 +181,9 @@ export function IntroductionPage() {
         </TabsContent>
         <TabsContent value="documents">
           <DocumentsTab />
+        </TabsContent>
+        <TabsContent value="glossary">
+          <GlossaryTab />
         </TabsContent>
       </Tabs>
     </div>
@@ -422,6 +446,155 @@ function WebTab() {
   )
 }
 
+/* ---------------------------------------------------------------- people */
+
+/** Badge variants for a Navigator tier, keyed so a new tier cannot fall through. */
+const TIER_VARIANT: Record<string, 'default' | 'secondary' | 'warning' | 'destructive'> = {
+  owner: 'secondary',
+  admin: 'destructive',
+  lawyer: 'default',
+  clerk: 'secondary',
+  client: 'warning',
+}
+
+/**
+ * The people tab.
+ *
+ * Two tables that look similar and mean entirely different things, which is why
+ * they are on one page rather than two: the first is who may *open* this matter,
+ * the second is who the matter is *about*. A reader who assumes the second list
+ * is the access list has misunderstood the only thing this portal is careful
+ * about, so the note between them says so outright.
+ */
+function PeopleTab() {
+  return (
+    <div className="space-y-6">
+      <Card>
+        <CardHeader>
+          <div>
+            <CardTitle>Who can open this matter</CardTitle>
+            <CardDescription>
+              Navigator Persons — rows that can sign in. Written by the development seed, so a
+              contributor can match the account they are logged in as to the row that let them
+              through.
+            </CardDescription>
+          </div>
+          <Badge variant="secondary">{NAVIGATOR_PEOPLE.length} accounts</Badge>
+        </CardHeader>
+        <CardContent>
+          <Table>
+            <TableCaption>
+              Opened against {MATTER_ENTITY.name} — a {MATTER_ENTITY.entityType} entity in{' '}
+              {MATTER_ENTITY.jurisdiction}, because every Project is opened against an entity and a
+              solo natural person gets one rather than an exception.
+            </TableCaption>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Person</TableHead>
+                <TableHead>Tier</TableHead>
+                <TableHead>Participation</TableHead>
+                <TableHead>Side</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {NAVIGATOR_PEOPLE.map((person) => (
+                <TableRow key={person.id}>
+                  <TableCell>
+                    <span className="font-serif font-semibold">{person.name}</span>
+                    <br />
+                    <span className="font-mono text-xs text-muted-foreground">{person.email}</span>
+                    {person.dri ? (
+                      <>
+                        <br />
+                        <Badge variant="outline">
+                          {person.dri === 'lawyer' ? 'Firm DRI' : 'Client DRI'}
+                        </Badge>
+                      </>
+                    ) : null}
+                  </TableCell>
+                  <TableCell>
+                    <Badge variant={TIER_VARIANT[person.role] ?? 'secondary'}>{person.role}</Badge>
+                  </TableCell>
+                  <TableCell>
+                    {person.participation ? (
+                      <code className="font-mono text-xs">{person.participation}</code>
+                    ) : (
+                      <span className="text-xs text-muted-foreground">no row</span>
+                    )}
+                  </TableCell>
+                  <TableCell className="text-sm text-muted-foreground">{person.side}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+
+          <Separator className="my-6" />
+
+          <dl className="space-y-4">
+            {NAVIGATOR_PEOPLE.map((person) => (
+              <div key={person.id}>
+                <dt className="font-serif text-sm font-semibold">{person.name}</dt>
+                <dd className="mt-0.5 text-sm leading-relaxed text-muted-foreground">
+                  <Inline>{person.note}</Inline>
+                </dd>
+              </div>
+            ))}
+          </dl>
+        </CardContent>
+      </Card>
+
+      <Alert variant="info">
+        <Users />
+        <AlertTitle>Two rosters, and only one of them is an access list</AlertTitle>
+        <AlertDescription>{TWO_ROSTERS_NOTE}</AlertDescription>
+      </Alert>
+
+      <div className="grid gap-6 lg:grid-cols-2">
+        {HOUSEHOLDS.map((household) => (
+          <Card key={household.id}>
+            <CardHeader>
+              <div>
+                <CardTitle>{household.label}</CardTitle>
+                <CardDescription>{household.note}</CardDescription>
+              </div>
+            </CardHeader>
+            <CardContent className="space-y-5">
+              {MATTER_PEOPLE.filter((person) => person.household === household.id).map((person) => (
+                <div key={person.id}>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <h3 className="font-serif text-base font-semibold">{person.name}</h3>
+                    <Badge
+                      variant={
+                        person.standing === 'party'
+                          ? 'default'
+                          : person.standing === 'witness'
+                            ? 'secondary'
+                            : 'outline'
+                      }
+                    >
+                      {person.standing}
+                    </Badge>
+                  </div>
+                  <p className="mt-0.5 text-sm font-medium text-primary">{person.role}</p>
+                  <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
+                    {person.detail}
+                  </p>
+                  {person.evidence ? (
+                    <p className="mt-1 text-xs leading-relaxed text-muted-foreground/80">
+                      <span className="font-semibold uppercase tracking-wide">Evidence</span> ·{' '}
+                      {person.evidence}
+                    </p>
+                  ) : null}
+                </div>
+              ))}
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 /* ------------------------------------------------------------ chronology */
 
 const FEED_ACCENT: Record<string, string> = {
@@ -440,7 +613,9 @@ function ChronologyTab() {
         <CardHeader>
           <div>
             <CardTitle>Chronology</CardTitle>
-            <CardDescription>Seven events, two of them a year apart.</CardDescription>
+            <CardDescription>
+              {CHRONOLOGY.length} events, two of them a year apart.
+            </CardDescription>
           </div>
         </CardHeader>
         <CardContent>
@@ -705,13 +880,26 @@ function ResearchTab() {
  * Every PDF here is produced by `navigator template render` from a notation
  * template in `templates/neon_law/`, which is why each card names the template
  * and its code: the provenance is the point. `pnpm render:documents`
- * regenerates both.
+ * regenerates all three.
  *
  * This is the one area built on navigator-ux rather than the shadcn components
  * the rest of the portal uses — `Panel`, `DownloadCard`, and `Callout` come
  * from the library. The viewer inside them does not: see `PdfViewer` for why
  * this repository owns that one.
  */
+/**
+ * Status to badge tone, keyed rather than nested in a ternary.
+ *
+ * A `Record` over the union cannot miss a status: add a fourth to
+ * `MatterDocument` and the compiler names this line, which a chain of `?:`
+ * would not — it would quietly fall through to the last branch instead.
+ */
+const DOCUMENT_TONE: Record<MatterDocument['status'], 'ready' | 'review' | 'active'> = {
+  signed: 'active',
+  served: 'ready',
+  draft: 'review',
+}
+
 function DocumentsTab() {
   const [activeId, setActiveId] = useState<string>(DOCUMENTS[0]?.id ?? '')
   const active: MatterDocument | undefined =
@@ -729,14 +917,13 @@ function DocumentsTab() {
             <DownloadCard
               key={doc.id}
               title={doc.title}
-              badge={
-                <NavBadge tone={doc.status === 'served' ? 'ready' : 'review'}>{doc.status}</NavBadge>
-              }
+              badge={<NavBadge tone={DOCUMENT_TONE[doc.status]}>{doc.status}</NavBadge>}
               description={
                 <>
                   {doc.kind} · {doc.dateLabel} · {doc.pages} pages
                   <br />
                   Rendered from <code className="font-mono text-xs">{doc.code}</code>
+                  {doc.format === 'letter' ? ' on firm letterhead' : null}
                 </>
               }
               actions={
@@ -807,7 +994,7 @@ function DocumentsTab() {
                   compiles in pure Rust — no shell-out, no headless browser.
                 </p>
                 <Callout tone="info">
-                  Regenerate both with <code>pnpm render:documents</code>. The dates and the client
+                  Regenerate them with <code>pnpm render:documents</code>. The dates and the client
                   name are <code>--answer</code> flags, which is the same substitution a real matter
                   performs from questionnaire responses.
                 </Callout>
@@ -816,6 +1003,78 @@ function DocumentsTab() {
           </div>
         </Split>
       ) : null}
+    </div>
+  )
+}
+
+/* -------------------------------------------------------------- glossary */
+
+/**
+ * The glossary tab.
+ *
+ * One card per term, each ending in the canonical link. The link is not
+ * decoration: this repository has no authority over Navigator's vocabulary, so
+ * every entry has to be checkable against the document that does. If the two
+ * ever disagree, the canonical entry is right and `src/glossary.ts` is a bug.
+ */
+function GlossaryTab() {
+  const byId = new Map(GLOSSARY.map((term) => [term.id, term]))
+
+  return (
+    <div className="space-y-6">
+      <Alert variant="info">
+        <BookMarked />
+        <AlertTitle>Navigator keeps one glossary, and it is not this one</AlertTitle>
+        <AlertDescription>{GLOSSARY_NOTE}</AlertDescription>
+      </Alert>
+
+      <div className="grid gap-6 lg:grid-cols-2">
+        {GLOSSARY.map((term) => (
+          <Card key={term.id} id={`term-${term.id}`}>
+            <CardHeader>
+              <div>
+                <CardTitle>{term.term}</CardTitle>
+                {term.also ? (
+                  <CardDescription>
+                    Also: <span className="font-mono">{term.also}</span>
+                  </CardDescription>
+                ) : null}
+              </div>
+              <Badge variant="outline">{term.source}.md</Badge>
+            </CardHeader>
+            <CardContent className="space-y-3 text-[0.95rem] leading-relaxed">
+              <p>
+                <Inline>{term.definition}</Inline>
+              </p>
+              <Separator />
+              <p className="text-sm text-muted-foreground">
+                <span className="font-semibold uppercase tracking-wide">Here</span> ·{' '}
+                <Inline>{term.here}</Inline>
+              </p>
+              {term.see?.length ? (
+                <p className="text-xs text-muted-foreground">
+                  See also{' '}
+                  {term.see.map((id, index) => (
+                    <span key={id}>
+                      {index > 0 ? ', ' : ''}
+                      <a className="underline hover:text-foreground" href={`#term-${id}`}>
+                        {byId.get(id)?.term ?? id}
+                      </a>
+                    </span>
+                  ))}
+                </p>
+              ) : null}
+            </CardContent>
+            <CardFooter>
+              <Button asChild variant="outline" size="sm">
+                <a href={canonicalUrl(term)} target="_blank" rel="noreferrer noopener">
+                  The canonical entry <ExternalLink />
+                </a>
+              </Button>
+            </CardFooter>
+          </Card>
+        ))}
+      </div>
     </div>
   )
 }
