@@ -18,21 +18,21 @@ repository, ever.
 Navigator serves this bundle at:
 
 ```text
-/app/projects/simpsons/portal/
+/app/projects/sample-litigation/portal/
 ```
 
-`simpsons` is the Project code; `portal` is a literal segment of Navigator's route, not an application name it
+`sample-litigation` is the Project code; `portal` is a literal segment of Navigator's route, not an application name it
 looks up — see `portal/src/project_portal.rs` in the Navigator repository. Navigator streams the bytes through
 its own origin behind the session cookie and the participation gate; it never redirects to a signed URL, because
 a signed URL is bearer-shareable and would not carry the session.
 
 That has three consequences for this app:
 
-1. **Vite `base` is baked at build time** and must be `/app/projects/simpsons/portal/`. A bundle built with the
+1. **Vite `base` is baked at build time** and must be `/app/projects/sample-litigation/portal/`. A bundle built with the
    wrong base 404s on every asset. It is one named constant at the top of `vite.config.ts`.
 2. **Never hardcode a mount-absolute link.** Write links relative to the base, or derive them — `src/mount.ts`
    is the whole of that job here, and `portalPath()` is what every in-bundle link goes through. Hardcoded
-   `/simpsons/...` strings are the single most common way one of these bundles breaks under its real mount.
+   `/sample-litigation/...` strings are the single most common way one of these bundles breaks under its real mount.
    Links to Navigator's *own* routes (`/app/projects`) stay absolute, because they are Navigator's paths rather
    than paths inside this bundle.
 3. **Same-origin is the whole mechanism.** Because the bundle is served from Navigator's origin, its calls to
@@ -58,14 +58,14 @@ it needs no exception. That rules out a few things a vibe-coded prototype reache
 The bundle must show that it actually mounted, through an element with:
 
 ```html
-id="simpsons-portal-ready"
+id="sample-litigation-portal-ready"
 ```
 
 React renders it, on the page kicker, so it exists **only once the app has mounted** — which is the point
 of it. A static marker in `index.html` would report "ready" for a bundle that failed to boot, and Navigator's
 browser walkthrough drives a real browser and waits on a CSS locator, so what it sees is the live DOM.
 
-The built `index.html` also carries `<meta name="navigator-ready-hook" content="simpsons-portal-ready">`, so a
+The built `index.html` also carries `<meta name="navigator-ready-hook" content="sample-litigation-portal-ready">`, so a
 check that reads the published document rather than driving a browser still finds the contract it is looking
 for. Both are asserted by `src/test/bundle.test.ts`, against what `pnpm build` actually emitted.
 
@@ -85,13 +85,13 @@ Then open the portal at its mount path — **not** `http://localhost:5173/`, whi
 serves nothing:
 
 ```text
-http://localhost:5173/app/projects/simpsons/portal/
+http://localhost:5173/app/projects/sample-litigation/portal/
 ```
 
 The PDF viewer is on the documents tab, which this link opens directly:
 
 ```text
-http://localhost:5173/app/projects/simpsons/portal/#introduction
+http://localhost:5173/app/projects/sample-litigation/portal/#introduction
 ```
 
 Pick **Documents** from the tab strip on that page. The first document opens in the viewer on arrival; the

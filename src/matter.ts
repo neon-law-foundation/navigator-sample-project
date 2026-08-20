@@ -21,7 +21,7 @@ import type { ActionItem, StatusCell } from './types'
 
 export const MATTER = {
   /** The Project code. It is also the first segment of the bucket prefix. */
-  code: 'simpsons',
+  code: 'sample-litigation',
   caption: 'Simpson v. Flanders',
   claim: 'Trespass to land',
   jurisdiction: 'Nevada',

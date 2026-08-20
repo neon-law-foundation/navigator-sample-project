@@ -77,7 +77,7 @@ export const GLOSSARY: GlossaryTerm[] = [
     anchor: 'project',
     definition:
       'The durable container every document on a matter lives in. It has a status, is always opened against an Entity, and its `code` — lowercase letters, digits, and single hyphens — is the matter\'s URL rather than an internal id.',
-    here: 'The Project code is `simpsons`, which is why this bundle is served at `/app/projects/simpsons/portal/` and why `vite.config.ts` bakes exactly that path in as its base. `navigator.yml` names the same code in one line.',
+    here: 'The Project code is `sample-litigation`, which is why this bundle is served at `/app/projects/sample-litigation/portal/` and why `vite.config.ts` bakes exactly that path in as its base. `navigator.yml` names the same code in one line.',
     see: ['matter', 'entity', 'participation'],
   },
   {
@@ -98,7 +98,7 @@ export const GLOSSARY: GlossaryTerm[] = [
     anchor: 'entity',
     definition:
       'A legal organization — an LLC, trust, corporation — with a type and a jurisdiction. Every Project is opened against one, and a solo natural person gets a `Human` entity rather than an exception to the rule.',
-    here: 'The fixture opens `simpsons` against a `Human` entity named "Simpson Plaintiff" in Nevada. A one-plaintiff trespass claim still has an organization row behind it, which is the rule made visible.',
+    here: 'The fixture opens `sample-litigation` against a `Human` entity named "Simpson Plaintiff" in Nevada. A one-plaintiff trespass claim still has an organization row behind it, which is the rule made visible.',
     see: ['project', 'person'],
   },
   {
@@ -118,7 +118,7 @@ export const GLOSSARY: GlossaryTerm[] = [
     anchor: 'personproject-role',
     definition:
       'One person\'s participation on one Project. The row answers two separate questions: its **presence** decides whether a client or lawyer sees the matter at all, and its **value** decides which side of the matter they are on.',
-    here: 'The seed writes four of them for `simpsons` and deliberately writes none for the Admin — so an administrator who was never assigned to this matter cannot reach it, by list or by URL.',
+    here: 'The seed writes four of them for `sample-litigation` and deliberately writes none for the Admin — so an administrator who was never assigned to this matter cannot reach it, by list or by URL.',
     see: ['participation', 'person'],
   },
   {

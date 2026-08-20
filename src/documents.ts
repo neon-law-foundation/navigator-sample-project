@@ -12,7 +12,7 @@
  *
  * `path` is relative to the bundle mount. It is joined through `portalPath` at
  * the point of use rather than written absolute, for the same reason every
- * other link in this app is — a hardcoded `/app/projects/simpsons/...` breaks
+ * other link in this app is — a hardcoded `/app/projects/sample-litigation/...` breaks
  * silently the day the mount moves.
  *
  * These are static files beside the bundle **because this is the sample

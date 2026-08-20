@@ -11,7 +11,7 @@
  *    system-wide role tier and, for this matter, a Person–Project Role that
  *    records their participation. These are the accounts that can *sign in* and
  *    reach the portal. Navigator's dev seed writes exactly five of them
- *    (`store::seed::seed_role_matrix_simpsons`), and the five below are those
+ *    (`store::seed::seed_role_matrix_sample`), and the five below are those
  *    five, spelled the way the seed spells them.
  * 2. **People in the pleaded facts.** Homer, Ned, and the two households. They
  *    are parties and witnesses in a simulated dispute. Most of them are not
@@ -52,7 +52,7 @@ export interface NavigatorPerson {
   role: PersonRole
   /**
    * The `participation` value on this person's Person–Project Role row for
-   * `simpsons`, or `null` where the seed deliberately writes no row.
+   * `sample-litigation`, or `null` where the seed deliberately writes no row.
    *
    * Written out rather than derived here because the value is the seed's, and
    * the seed is what a local Navigator actually contains — note that the lawyer

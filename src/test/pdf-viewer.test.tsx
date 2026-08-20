@@ -25,7 +25,7 @@ vi.mock('../pdf', async (importOriginal) => {
   return { ...actual, ...pdfDouble() }
 })
 
-const SRC = '/app/projects/simpsons/portal/documents/notice-of-rescission.pdf'
+const SRC = '/app/projects/sample-litigation/portal/documents/notice-of-rescission.pdf'
 
 beforeEach(() => {
   resetPdfDouble()

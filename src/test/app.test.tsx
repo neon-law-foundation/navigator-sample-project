@@ -33,11 +33,11 @@ describe('the Simpson v. Flanders portal', () => {
     // The hook is Navigator's signal that the bundle booted, so it must not
     // exist before React renders. A static marker in index.html would report
     // "ready" for an app that threw on mount.
-    expect(document.getElementById('simpsons-portal-ready')).toBeNull()
+    expect(document.getElementById('sample-litigation-portal-ready')).toBeNull()
 
     render(<App />)
 
-    expect(document.getElementById('simpsons-portal-ready')).toBeInTheDocument()
+    expect(document.getElementById('sample-litigation-portal-ready')).toBeInTheDocument()
   })
 
   it('never hardcodes the mount into a link', () => {
