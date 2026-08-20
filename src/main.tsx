@@ -22,11 +22,10 @@
  */
 
 // navigator-ux's stylesheet, which carries its tokens, its component rules, and
-// the two Source Serif 4 woff2 files it vendors. Imported *before* the portal's
-// own stylesheet so that where the two define the same thing, this repository
-// wins: the library declares its tokens at `:root`, and `index.css` overrides
-// at `:root:not(.light)`, which only takes effect reliably if it is not the one
-// arriving first.
+// the two Source Serif 4 woff2 files it vendors. It has to arrive first: the
+// portal's theme aliases the library's `--nav-*` tokens rather than restating
+// them, so this import is where those values come from, and its component rules
+// are the ones `index.css` is entitled to override.
 //
 // Like `index.css`, it fetches nothing at runtime. The fonts are relative URLs
 // inside the package, so Vite emits them as assets under the mount and they are
@@ -46,9 +45,9 @@ import { App } from './App'
 /*
  * The entry point.
  *
- * No theme provider: dark mode follows the operating system through a media
- * query in `index.css`, so there is no state to hold and no flash of the wrong
- * palette before hydration.
+ * No theme provider: dark mode follows the operating system, through the media
+ * query navigator-ux's own tokens are defined under, so there is no state to
+ * hold and no flash of the wrong palette before hydration.
  *
  * No session provider either, deliberately. Navigator streams this bundle from
  * its own origin, and the session check and participation gate have already run

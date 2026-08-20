@@ -4,7 +4,9 @@
 import { ArrowRight, ExternalLink } from 'lucide-react'
 import { useEffect, useState } from 'react'
 
+import { DiscoveryPage } from './DiscoveryPage'
 import { IntroductionPage } from './IntroductionPage'
+import { INTERROGATORIES, PROCEEDING } from './discovery'
 import { MATTER, MATTER_FACTS, NEXT_STEPS } from './matter'
 import { portalPath } from './mount'
 import { READY_KICKER } from './ready'
@@ -28,7 +30,7 @@ import { cn } from '@/lib/utils'
  * behave differently gets edited instead of wrapped.
  */
 
-type View = 'overview' | 'introduction'
+type View = 'overview' | 'introduction' | 'discovery'
 
 /**
  * Routing by fragment, deliberately.
@@ -40,8 +42,13 @@ type View = 'overview' | 'introduction'
  * fragment is never sent to the origin, so every view is a bookmarkable URL
  * that cannot 404, at the cost of a `#` a reader will not notice.
  */
+const VIEW_BY_HASH: Record<string, View> = {
+  '#introduction': 'introduction',
+  '#discovery': 'discovery',
+}
+
 function viewFromHash(): View {
-  return window.location.hash === '#introduction' ? 'introduction' : 'overview'
+  return VIEW_BY_HASH[window.location.hash] ?? 'overview'
 }
 
 export function App() {
@@ -58,7 +65,9 @@ export function App() {
       <TopNav view={view} />
 
       <main className="mx-auto w-full max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
-        {view === 'introduction' ? <IntroductionPage /> : <Overview />}
+        {view === 'introduction' ? <IntroductionPage /> : null}
+        {view === 'discovery' ? <DiscoveryPage /> : null}
+        {view === 'overview' ? <Overview /> : null}
       </main>
 
       <footer className="border-t bg-muted/40">
@@ -79,6 +88,7 @@ function TopNav({ view }: { view: View }) {
       href: portalPath('#introduction'),
       current: view === 'introduction',
     },
+    { label: 'Discovery', href: portalPath('#discovery'), current: view === 'discovery' },
   ]
 
   return (
@@ -185,6 +195,30 @@ function Overview() {
               <Button asChild>
                 <a href={portalPath('#introduction')}>
                   Read the introduction to {SOUL_CLAIM.count} <ArrowRight />
+                </a>
+              </Button>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <div>
+                <CardTitle>Discovery — {PROCEEDING.set}</CardTitle>
+                <CardDescription>
+                  Served {PROCEEDING.served.label} · responses {PROCEEDING.responded.label}
+                </CardDescription>
+              </div>
+            </CardHeader>
+            <CardContent className="space-y-4 text-[0.95rem] leading-relaxed">
+              <p>
+                {INTERROGATORIES.length} written questions went to Wendell Prine and came back
+                answered in part, objected to in part. The page splits each response into the two
+                voices it is actually written in — the defendant under oath, and his counsel
+                objecting — and says what each one leaves us with.
+              </p>
+              <Button asChild variant="outline">
+                <a href={portalPath('#discovery')}>
+                  Read the interrogatories and responses <ArrowRight />
                 </a>
               </Button>
             </CardContent>

@@ -13,9 +13,12 @@
  * in the bundle that could fail because of somebody else's server.
  *
  * So these are silhouettes and shapes: a horned figure over a hedge, a round
- * one reaching, and a doughnut with something in it. Every fill is a `--nav-*`
- * token or a gradient built from one, which is what lets them follow the portal
- * into dark mode with no second copy.
+ * one reaching, and a doughnut with something in it. Every fill is a theme
+ * variable or a gradient built from one, which is what lets them follow the
+ * portal into dark mode with no second copy. The warm and cool pair they are
+ * drawn from is `--art-*` in `src/index.css` rather than the `--chart-*` graph
+ * series they used to borrow, so re-ordering the series cannot recolor a
+ * drawing that means something by warm.
  */
 
 /** Bite state, which is the whole chronology in one enum. */
@@ -52,20 +55,20 @@ export function HedgeScene() {
       <defs>
         <linearGradient id="sky" x1="0" y1="0" x2="1" y2="0">
           <stop offset="0%" stopColor="var(--muted)" />
-          <stop offset="55%" stopColor="color-mix(in oklch, var(--chart-3) 16%, var(--background))" />
-          <stop offset="100%" stopColor="color-mix(in oklch, var(--chart-2) 14%, var(--background))" />
+          <stop offset="55%" stopColor="color-mix(in oklch, var(--art-dough) 16%, var(--background))" />
+          <stop offset="100%" stopColor="color-mix(in oklch, var(--art-warm) 14%, var(--background))" />
         </linearGradient>
         <radialGradient id="glow" cx="0.5" cy="0.5" r="0.5">
-          <stop offset="0%" stopColor="var(--chart-3)" stopOpacity="0.85" />
-          <stop offset="60%" stopColor="var(--chart-3)" stopOpacity="0.22" />
-          <stop offset="100%" stopColor="var(--chart-3)" stopOpacity="0" />
+          <stop offset="0%" stopColor="var(--art-dough)" stopOpacity="0.85" />
+          <stop offset="60%" stopColor="var(--art-dough)" stopOpacity="0.22" />
+          <stop offset="100%" stopColor="var(--art-dough)" stopOpacity="0" />
         </radialGradient>
       </defs>
 
       <rect width="800" height="300" fill="url(#sky)" />
 
       {/* A low sun behind the defendant, because the pleading says so. */}
-      <circle cx="655" cy="120" r="58" fill="var(--chart-3)" opacity="0.28" />
+      <circle cx="655" cy="120" r="58" fill="var(--art-dough)" opacity="0.28" />
 
       {/* Plaintiff: round, unsuspecting, reaching. */}
       <g fill="var(--foreground)" opacity="0.86">
@@ -82,7 +85,7 @@ export function HedgeScene() {
       </g>
 
       {/* Defendant: taller, horned, extending the instrument. */}
-      <g fill="var(--chart-2)">
+      <g fill="var(--art-warm)">
         <circle cx="600" cy="118" r="38" />
         {/* Horns. */}
         <path d="M572 90 q-16 -26 -3 -44 q13 14 22 32 z" />
@@ -90,7 +93,7 @@ export function HedgeScene() {
         <path d="M562 300 v-108 a38 38 0 0 1 76 0 v108 z" />
         <path
           d="M566 178 q-56 -6 -96 12"
-          stroke="var(--chart-2)"
+          stroke="var(--art-warm)"
           strokeWidth="14"
           strokeLinecap="round"
           fill="none"
@@ -100,12 +103,12 @@ export function HedgeScene() {
       {/* The doughnut, mid-air, mid-offer. */}
       <g transform="translate(400 186)">
         <circle r="72" fill="url(#glow)" />
-        <circle r="34" fill="var(--chart-3)" stroke="var(--foreground)" strokeWidth="3" />
+        <circle r="34" fill="var(--art-dough)" stroke="var(--foreground)" strokeWidth="3" />
         <circle r="12" fill="var(--card)" stroke="var(--foreground)" strokeWidth="2.5" />
       </g>
 
       {/* The hedge, which is where every neighborly conversation in this matter happens. */}
-      <g fill="var(--chart-4)">
+      <g fill="var(--art-figure)">
         <rect y="228" width="800" height="72" opacity="0.9" />
         {[...Array(21).keys()].map((i) => (
           <circle key={i} cx={i * 40 + 10} cy="230" r="24" opacity="0.9" />
@@ -164,12 +167,12 @@ export function Doughnut({ state = 'whole', size = 200 }: { state?: BiteState; s
       />
 
       <g mask="url(#bite-mask)">
-        <circle cx="100" cy="100" r="76" fill="var(--chart-3)" opacity="0.55" />
+        <circle cx="100" cy="100" r="76" fill="var(--art-dough)" opacity="0.55" />
         <circle
           cx="100"
           cy="100"
           r="66"
-          fill="var(--chart-3)"
+          fill="var(--art-dough)"
           stroke="var(--foreground)"
           strokeWidth="2.5"
           opacity="0.95"
@@ -192,7 +195,7 @@ export function Doughnut({ state = 'whole', size = 200 }: { state?: BiteState; s
             height="4"
             rx="2"
             transform={`rotate(${sprinkle.rotate} ${sprinkle.x} ${sprinkle.y})`}
-            fill={sprinkle.warm ? 'var(--chart-2)' : 'var(--chart-5)'}
+            fill={sprinkle.warm ? 'var(--art-warm)' : 'var(--art-cool)'}
           />
         ))}
       </g>
@@ -206,7 +209,7 @@ export function Doughnut({ state = 'whole', size = 200 }: { state?: BiteState; s
         fontSize="26"
         fontFamily="ui-monospace, SFMono-Regular, Menlo, monospace"
         fontWeight="700"
-        fill="var(--chart-2)"
+        fill="var(--art-warm)"
         opacity={gone ? 1 : 0.85}
       >
         §
