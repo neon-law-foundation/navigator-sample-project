@@ -4,12 +4,12 @@
 /**
  * Links, derived from the mount rather than written out.
  *
- * Navigator serves this bundle from `/app/projects/simpsons/portal/`, and Vite
+ * Navigator serves this bundle from `/app/projects/sample-litigation/portal/`, and Vite
  * bakes that path in as `import.meta.env.BASE_URL` at build time (see the
  * `base` in `vite.config.ts`). Deriving every in-bundle link from it means the
  * same source builds correctly under a different mount, and — more to the
  * point — that no link in this app can quietly assume the mount and 404 when it
- * moves. A hardcoded `/simpsons/...` is the most common way one of these
+ * moves. A hardcoded `/sample-litigation/...` is the most common way one of these
  * bundles breaks in production, and it breaks silently, because the link only
  * fails when someone clicks it.
  *

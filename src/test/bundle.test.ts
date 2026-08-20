@@ -17,8 +17,8 @@ import { describe, expect, it } from 'vitest'
  * green when it did not run is worse than no gate.
  */
 
-const MOUNT = '/app/projects/simpsons/portal/'
-const READY_HOOK = 'simpsons-portal-ready'
+const MOUNT = '/app/projects/sample-litigation/portal/'
+const READY_HOOK = 'sample-litigation-portal-ready'
 const BUILD_FIRST = 'no dist/ — run `pnpm build` before `pnpm test`, or run `pnpm check`'
 
 const documents = import.meta.glob<string>('../../dist/index.html', {

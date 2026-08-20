@@ -4,7 +4,7 @@
 /**
  * Navigator's mount signal.
  *
- * The element carrying `#simpsons-portal-ready` is what Navigator's browser
+ * The element carrying `#sample-litigation-portal-ready` is what Navigator's browser
  * walkthrough waits for, so it has to be rendered by React — a static marker in
  * `index.html` would report "ready" for a bundle that threw on mount.
  *
@@ -14,4 +14,4 @@
  * kicker. Two copies of the string in two files would eventually become two
  * different strings.
  */
-export const READY_KICKER = <span id="simpsons-portal-ready">Client portal · live</span>
+export const READY_KICKER = <span id="sample-litigation-portal-ready">Client portal · live</span>
