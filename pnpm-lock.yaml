@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@neon-law-foundation/navigator-ux':
-        specifier: https://github.com/neon-law-foundation/navigator-ux/releases/download/v0.5.0/navigator-ux-v0.5.0.tgz
-        version: https://github.com/neon-law-foundation/navigator-ux/releases/download/v0.5.0/navigator-ux-v0.5.0.tgz(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+        specifier: https://github.com/neon-law-foundation/navigator-ux/releases/download/v0.7.0/navigator-ux-v0.7.0.tgz
+        version: https://github.com/neon-law-foundation/navigator-ux/releases/download/v0.7.0/navigator-ux-v0.7.0.tgz(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       '@radix-ui/react-separator':
         specifier: ^1.1.15
         version: 1.1.15(@types/react-dom@19.2.4(@types/react@19.2.18))(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
@@ -274,9 +274,9 @@ packages:
     resolution: {integrity: sha512-26wVFEgs6gbe7wmzCrud1pK8q6oOgcUu7OOF24BuazB8ZUCskU9ZSLrCjoWIFVxx09rjAxsXxPleaWowHvdPCA==}
     engines: {node: '>= 10'}
 
-  '@neon-law-foundation/navigator-ux@https://github.com/neon-law-foundation/navigator-ux/releases/download/v0.5.0/navigator-ux-v0.5.0.tgz':
-    resolution: {integrity: sha512-shEkqA8PHp45m0UGEXwycBRgWwrQ+u0tr9W03b2yLD+czX+gz1r007wTbu/A2/OVswMOxax5yA/l0Z41ECpY/A==, tarball: https://github.com/neon-law-foundation/navigator-ux/releases/download/v0.5.0/navigator-ux-v0.5.0.tgz}
-    version: 0.5.0
+  '@neon-law-foundation/navigator-ux@https://github.com/neon-law-foundation/navigator-ux/releases/download/v0.7.0/navigator-ux-v0.7.0.tgz':
+    resolution: {integrity: sha512-vSEwTsQkpuFY6auDqJTcP8OWip/12BDoLyjw0wI5RoHLK1LQVFBNaXVTieJjHaGWsodJOQOK6efAvWm9nK84GQ==, tarball: https://github.com/neon-law-foundation/navigator-ux/releases/download/v0.7.0/navigator-ux-v0.7.0.tgz}
+    version: 0.7.0
     engines: {node: '>=22'}
     peerDependencies:
       react: ^19.0.0
@@ -1760,7 +1760,7 @@ snapshots:
       '@napi-rs/canvas-win32-x64-msvc': 1.0.7
     optional: true
 
-  '@neon-law-foundation/navigator-ux@https://github.com/neon-law-foundation/navigator-ux/releases/download/v0.5.0/navigator-ux-v0.5.0.tgz(react-dom@19.2.8(react@19.2.8))(react@19.2.8)':
+  '@neon-law-foundation/navigator-ux@https://github.com/neon-law-foundation/navigator-ux/releases/download/v0.7.0/navigator-ux-v0.7.0.tgz(react-dom@19.2.8(react@19.2.8))(react@19.2.8)':
     dependencies:
       d3-array: 3.2.4
       d3-force: 3.0.0
