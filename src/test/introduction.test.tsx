@@ -231,6 +231,7 @@ describe('the count on the overview', () => {
     expect(within(nav).getAllByRole('link').map((link) => link.textContent)).toEqual([
       'Overview',
       'Count II',
+      'Discovery',
     ])
   })
 })

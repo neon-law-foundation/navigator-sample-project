@@ -94,6 +94,12 @@ The PDF viewer is on the documents tab, which this link opens directly:
 http://localhost:5173/app/projects/sample-litigation/portal/#introduction
 ```
 
+The discovery exchange is its own view, and needs no tab:
+
+```text
+http://localhost:5173/app/projects/sample-litigation/portal/#discovery
+```
+
 Pick **Documents** from the tab strip on that page. The first document opens in the viewer on arrival; the
 cards beside it switch which one is open, and the toolbar carries page navigation, zoom, fit-to-width, and
 find-in-document.
@@ -139,9 +145,10 @@ document last.
 ```text
 index.html                  the Vite template — no inline script, ever
 src/main.tsx                the entry: the stylesheet, imported once, and the mount
-src/index.css               Tailwind, plus the teal theme every component reads
+src/index.css               Tailwind, plus the theme every component reads, aliased from navigator-ux
 src/App.tsx                 the shell, the fragment router, and the overview
 src/IntroductionPage.tsx    Count II — eight tabs
+src/DiscoveryPage.tsx       the interrogatories and the responses, split by who signed them
 src/RelationshipGraph.tsx   the force-directed party/evidence web
 src/PdfViewer.tsx           the document viewer: canvas, text layer, find bar
 src/pdf.ts                  the pdf.js seam — worker wiring, opening, text extraction
@@ -154,6 +161,7 @@ src/soulContract.ts         the fixture data for Count II, including the graph
 src/people.ts               who may read the matter, and who the matter is about
 src/glossary.ts             Navigator's vocabulary, scoped to this bundle
 src/research.ts             the authorities — real law, verified before it was written down
+src/discovery.ts            the interrogatory exchange, and the rules it is measured against
 src/documents.ts            the rendered PDFs and the templates behind them
 src/mount.ts                links derived from the base rather than written out
 templates/neon_law/*.md     notation templates; the source of the PDFs
@@ -162,10 +170,16 @@ scripts/render-documents.sh `navigator template render`, once per template
 
 ### Styling
 
-Semantic CSS variables in `src/index.css`, defined once for light and again for dark, with every component
-styled against the semantic name rather than a color. Nothing in `src/components/ui` names a hue, so the teal
-accent — and any future rebrand — is that one file. Dark mode follows the operating system through a media
-query, so there is no theme state to hold and no flash of the wrong palette.
+Semantic CSS variables in `src/index.css`, with every component styled against the semantic name rather than
+a color. Nothing in `src/components/ui` names a hue, so the teal accent is that one file — and that file now
+names no hue either: each variable aliases the `--nav-*` token navigator-ux publishes for the same job, so the
+brand lives upstream and a re-toned release arrives on the next `pnpm install`. It is also what keeps the
+documents tab coherent, where library components render beside components from `src/components/ui`.
+
+Dark mode comes with the tokens. navigator-ux redefines its own under `prefers-color-scheme: dark`, so an
+alias resolves to the dark value inside that query and this repository carries no second palette. There is no
+theme state to hold and no flash of the wrong palette — and no class hook: Tailwind's `dark:` variant is
+pointed at the same media query, because the `.dark` class it defaults to is something nothing here sets.
 
 The components live here rather than arriving from a package, which is what shadcn is: you own the source, so
 a component that needs to behave differently gets edited instead of wrapped.
@@ -259,6 +273,29 @@ Midpage and checked against the opinion or statute text before it was written do
 `src/research.ts` is verbatim. `Authority.verified` exists in the type so the page can say so on the face of
 each card — a demo that blurs real law into fixture data teaches a reader to trust a citation because it
 looked like one.
+
+### Discovery is two voices, not one
+
+`#discovery` renders one written exchange: Plaintiff's first set of interrogatories to Wendell Prine, and what
+came back thirty days later. The page exists because of a fact about the document it renders. Under NRCP
+33(b)(5) — *"The person who makes the answers must sign them, and the attorney who objects must sign any
+objections"* — a response is signed twice, by two people, certifying different things. Prine swears to the
+answers and can be impeached with them; his counsel signs the objections and swears to nothing. The PDF does
+not make that obvious, and a client who misses it concludes the other side admitted something it did not.
+
+So each interrogatory is rendered as attributed blocks — what we asked, what counsel objected, what the
+defendant swore, and then the part no response contains: what it leaves us with, and what we do next. The one
+deficient response in the set is deficient for a reason quoted from the rule rather than asserted by us.
+
+The same line this repository draws for case law is drawn here. **The exchange is fixture and the rules are
+real**: the questions, answers, objections, dates, and opposing counsel are invented, and `Rule.verified` in
+`src/discovery.ts` marks the quotes that are not — verbatim from the Nevada Rules of Civil Procedure. Opposing
+counsel is invented deliberately. A sample matter that casts a real firm as the adversary in a simulated
+soul-conveyance dispute is a sample matter with a problem.
+
+`src/discovery.ts` checks its own story at import: a duplicated number, an answer filed under a response that
+claims to be objection-only, or an objection citing a rule the module does not carry all throw where a test
+sees them. Each of those renders perfectly well while being wrong, which is the failure mode worth a guard.
 
 ### There is no session code here
 

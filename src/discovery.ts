@@ -10,7 +10,7 @@ import type { StatusCell } from './types'
  * Two things are being simulated here, and the page exists because they are
  * different things. An interrogatory response is not one document written by
  * one person: under NRCP 33(b)(5) the party signs the answers and the attorney
- * signs the objections, so what arrives is two voices stapled together. Abner
+ * signs the objections, so what arrives is two voices stapled together. Wendell
  * Prine answers under oath, in his own register, about a hedge and a doughnut.
  * His counsel objects in the register of a lawyer preserving grounds. Reading a
  * response without knowing which voice is speaking is how a client concludes
@@ -46,7 +46,7 @@ export interface Signer {
  * The signature blocks.
  *
  * Opposing counsel is invented for the fixture — Nevada has no Marrow & Stipe
- * and no Verity Stipe, and inventing them is deliberate: a sample matter that
+ * and no Hollis Stipe, and inventing them is deliberate: a sample matter that
  * names a real firm as the adversary in a simulated soul-conveyance dispute is
  * a sample matter with a problem. The firm side is the seeded lawyer from
  * `people.ts`, because that is who a contributor signs in as.
@@ -62,7 +62,7 @@ export const SIGNERS: Signer[] = [
   },
   {
     id: 'counsel',
-    name: 'Verity Stipe',
+    name: 'Hollis Stipe',
     affiliation: 'Marrow & Stipe LLP',
     side: 'Defendant',
     signs:
@@ -70,7 +70,7 @@ export const SIGNERS: Signer[] = [
   },
   {
     id: 'party',
-    name: 'Abner Prine',
+    name: 'Wendell Prine',
     affiliation: 'In his own person',
     side: 'Defendant',
     signs:
@@ -329,14 +329,14 @@ export const INTERROGATORIES: Interrogatory[] = [
       },
     ],
     answer:
-      'Subject to that objection, and excluding anything I discussed with my lawyer: 14 April 2026, in my own kitchen, to my wife Bernice. I did not say it to Cruller, and I have not said it to anybody else.',
+      'Subject to that objection, and excluding anything I discussed with my lawyer: 14 April 2026, in my own kitchen, to my wife Verity. I did not say it to Cruller, and I have not said it to anybody else.',
     kind: 'answered-in-part',
     assessment: {
       sufficiency: 'sufficient',
       note:
         'Narrowed, and useful anyway. 14 April 2026 is the second bite — he dates his own contention to the day Cruller finished the doughnut, not to the day of the offer. On his own sworn account, there was nothing to contend about for 378 days.',
       followUp:
-        'Privilege log requested for the withheld communications, so the objection is a list of documents rather than an assertion. Bernice Prine moves from a witness to the hedge conversation to a witness to his state of mind.',
+        'Privilege log requested for the withheld communications, so the objection is a list of documents rather than an assertion. Verity Prine moves from a witness to the hedge conversation to a witness to his state of mind.',
     },
   },
   {
@@ -347,14 +347,14 @@ export const INTERROGATORIES: Interrogatory[] = [
       'Identify each person present at the hedge on 1 April 2025, and each person present when Cruller consumed the remainder of the doughnut on 14 April 2026.',
     objections: [],
     answer:
-      'On 1 April 2025: myself, Cruller, my wife Bernice, and my boys Ollie and Wes, who were in the yard. On 14 April 2026 I was not present and I do not know who was.',
+      'On 1 April 2025: myself, Cruller, my wife Verity, and my boys Ambrose and Errol, who were in the yard. On 14 April 2026 I was not present and I do not know who was.',
     kind: 'answered',
     assessment: {
       sufficiency: 'sufficient',
       note:
-        'Clean, and it does work for us. Ollie and Wes were on the roster as "in the yard, not yet noticed"; the defendant has now identified them himself, under oath, which is a better foundation for noticing them than our own inference was.',
+        'Clean, and it does work for us. Ambrose and Errol were on the roster as "in the yard, not yet noticed"; the defendant has now identified them himself, under oath, which is a better foundation for noticing them than our own inference was.',
       followUp:
-        'Notice the depositions of Ollie and Wes Prine. Both are minors, so the notice goes through counsel and any examination is bounded accordingly.',
+        'Notice the depositions of Ambrose and Errol Prine. Both are minors, so the notice goes through counsel and any examination is bounded accordingly.',
     },
   },
   {
@@ -436,7 +436,7 @@ export const INTERROGATORIES: Interrogatory[] = [
  */
 export const PROCEEDING = {
   set: 'Plaintiff’s First Set of Interrogatories',
-  directedTo: 'Defendant Abner Prine',
+  directedTo: 'Defendant Wendell Prine',
   served: { iso: '2026-06-25', label: '25 June 2026' },
   responded: { iso: '2026-07-27', label: '27 July 2026' },
   conferred: { iso: '2026-08-12', label: '12 August 2026' },
