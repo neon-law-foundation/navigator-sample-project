@@ -6,109 +6,120 @@
 @import 'tailwindcss';
 
 /*
- * The portal's own theme.
+ * The portal's theme, sourced from navigator-ux.
  *
- * shadcn's convention: semantic CSS variables (`--background`, `--primary`,
- * `--muted-foreground`) defined once for light and re-defined for dark, with
- * every component styled against the semantic name rather than a color. That
- * indirection is the whole point — a rebrand is this file, not a sweep through
- * the components.
+ * shadcn's convention is a set of semantic CSS variables — `--background`,
+ * `--primary`, `--muted-foreground` — defined once and read by every component,
+ * so that a rebrand is one file rather than a sweep through the components.
+ * This file keeps those names and stops inventing their values: each one now
+ * aliases the `--nav-*` token navigator-ux publishes for the same job, from the
+ * stylesheet imported ahead of this one in `src/main.tsx`.
  *
- * The accent is teal, carried through primary, ring, and chart-1 so the brand
- * shows up in buttons, focus rings, and the relationship graph without any of
- * them naming a color.
+ * That is what makes the two halves of the documents tab agree. It renders
+ * navigator-ux components beside components from `src/components/ui`, and while
+ * the palettes were maintained separately they were only approximately the same
+ * teal — close enough to read as a rendering fault rather than a decision. The
+ * alias also puts the brand upstream: a token re-toned in a navigator-ux release
+ * arrives on the next `pnpm install` instead of in a patch here.
+ *
+ * Dark mode comes with it, which is why this file no longer carries a second
+ * palette. navigator-ux redefines its own semantic tokens under
+ * `prefers-color-scheme: dark`, so an alias resolves to the dark value inside
+ * that query with nothing here restating it. Its `--nav-teal-*` scale, radius,
+ * and font tokens are scheme-independent by design and stay put.
  */
 
-@custom-variant dark (&:where(.dark, .dark *));
+/*
+ * Tailwind's `dark:` variant, pointed at that same media query.
+ *
+ * It used to be the class hook Tailwind ships by default — `.dark` on an
+ * ancestor — which nothing in this bundle ever sets: there is no theme toggle,
+ * deliberately, because the palette follows the operating system. So every
+ * `dark:` utility was inert, including the one in `src/components/ui/badge.tsx`
+ * that keeps the warning badge legible on a dark ground. navigator-ux has no
+ * class hook of its own, so following its media query leaves one mechanism to
+ * understand rather than two that disagree.
+ */
+@custom-variant dark (@media (prefers-color-scheme: dark));
 
 :root {
-  --radius: 0.5rem;
+  --radius: var(--nav-radius);
 
-  --background: oklch(0.995 0.002 180);
-  --foreground: oklch(0.21 0.02 200);
+  --background: var(--nav-color-bg);
+  --foreground: var(--nav-color-text);
 
-  --card: oklch(1 0 0);
-  --card-foreground: var(--foreground);
-  --popover: oklch(1 0 0);
-  --popover-foreground: var(--foreground);
+  --card: var(--nav-color-surface);
+  --card-foreground: var(--nav-color-text);
+  --popover: var(--nav-color-surface-raised);
+  --popover-foreground: var(--nav-color-text);
 
-  /* Teal 700 — dark enough to carry white text at AA on small type. */
-  --primary: oklch(0.52 0.09 195);
-  --primary-foreground: oklch(0.99 0.005 180);
+  /* Teal 500 in light and teal 400 in dark, each already paired by the library
+     with the text color that carries it — which is what `on-primary` is. */
+  --primary: var(--nav-color-primary);
+  --primary-foreground: var(--nav-color-on-primary);
 
-  --secondary: oklch(0.96 0.012 190);
-  --secondary-foreground: oklch(0.28 0.03 200);
+  --secondary: var(--nav-color-secondary);
+  --secondary-foreground: var(--nav-color-on-secondary);
 
-  --muted: oklch(0.965 0.008 190);
-  --muted-foreground: oklch(0.52 0.02 205);
+  /* `muted` takes the lighter tinted surface and `accent` the deeper one, which
+     is the relationship the shadcn components assume when they paint an
+     `accent` hover state over a `muted` ground. */
+  --muted: var(--nav-color-surface-subtle);
+  --muted-foreground: var(--nav-color-text-muted);
 
-  --accent: oklch(0.94 0.03 190);
-  --accent-foreground: oklch(0.28 0.04 200);
+  --accent: var(--nav-color-secondary);
+  --accent-foreground: var(--nav-color-on-secondary);
 
-  --destructive: oklch(0.55 0.19 27);
-  --destructive-foreground: oklch(0.99 0.005 180);
+  /* The solid danger pair rather than the subtle one: `destructive` is a filled
+     surface wherever this bundle uses it, never a tint. */
+  --destructive: var(--nav-color-danger-solid);
+  --destructive-foreground: var(--nav-color-on-danger-solid);
 
-  --warning: oklch(0.72 0.14 75);
-  --warning-foreground: oklch(0.26 0.05 70);
+  /*
+   * Warning and success are the opposite case — both are only ever a tint or a
+   * text color here, so they pair with the library's `on-*-subtle` text tokens.
+   * `--nav-color-warning` is a vivid amber navigator-ux does not flip for dark,
+   * and it is unreadable as text on white, which is exactly why the warning
+   * badge paints its text in `--warning-foreground` and reaches for the amber
+   * itself only under `dark:`.
+   */
+  --warning: var(--nav-color-warning);
+  --warning-foreground: var(--nav-color-on-warning-subtle);
 
-  --success: oklch(0.55 0.11 155);
-  --success-foreground: oklch(0.99 0.005 180);
+  --success: var(--nav-color-success);
+  --success-foreground: var(--nav-color-on-success-subtle);
 
-  --border: oklch(0.9 0.012 195);
-  --input: oklch(0.9 0.012 195);
-  --ring: oklch(0.52 0.09 195);
+  --border: var(--nav-color-border);
+  --input: var(--nav-color-border);
+  --ring: var(--nav-color-focus);
 
-  /* Graph series. Ordered so adjacent node kinds never share a hue family. */
-  --chart-1: oklch(0.52 0.09 195);
-  --chart-2: oklch(0.55 0.19 27);
-  --chart-3: oklch(0.72 0.14 75);
-  --chart-4: oklch(0.55 0.11 155);
-  --chart-5: oklch(0.55 0.13 265);
+  /* Graph series. navigator-ux orders its chart tokens so that adjacent ones
+     never share a hue family, and re-tones all of them for dark. The graph
+     reads `--chart-*` through `var()` in SVG presentation attributes, so it
+     follows without naming a hue. */
+  --chart-1: var(--nav-chart-1);
+  --chart-2: var(--nav-chart-2);
+  --chart-3: var(--nav-chart-3);
+  --chart-4: var(--nav-chart-4);
+  --chart-5: var(--nav-chart-5);
+
+  /*
+   * The illustrations, which are not a graph.
+   *
+   * `src/art.tsx` used to paint its silhouettes out of `--chart-2` and
+   * `--chart-3` because those happened to be a red and an amber. They are a
+   * series, not a palette: navigator-ux orders its chart tokens for legibility
+   * between neighbours, so borrowing them turned the horned figure indigo and
+   * painted the sprinkles the drawing calls `warm` in a cool hue. These four
+   * name what the drawing actually needs, and re-ordering the series no longer
+   * reaches it.
+   */
+  --art-warm: var(--nav-color-danger-solid);
+  --art-dough: var(--nav-color-warning);
+  --art-figure: var(--nav-color-success);
+  --art-cool: var(--nav-chart-5);
 }
 
-.dark {
-  --background: oklch(0.19 0.015 210);
-  --foreground: oklch(0.95 0.008 190);
-
-  --card: oklch(0.23 0.018 208);
-  --card-foreground: var(--foreground);
-  --popover: oklch(0.23 0.018 208);
-  --popover-foreground: var(--foreground);
-
-  /* Lifted for dark: the light-mode teal fails contrast on a dark ground. */
-  --primary: oklch(0.74 0.11 190);
-  --primary-foreground: oklch(0.19 0.03 205);
-
-  --secondary: oklch(0.28 0.022 205);
-  --secondary-foreground: oklch(0.95 0.008 190);
-
-  --muted: oklch(0.27 0.02 205);
-  --muted-foreground: oklch(0.71 0.02 195);
-
-  --accent: oklch(0.32 0.035 195);
-  --accent-foreground: oklch(0.95 0.008 190);
-
-  --destructive: oklch(0.66 0.17 25);
-  --destructive-foreground: oklch(0.17 0.03 25);
-
-  --warning: oklch(0.79 0.13 78);
-  --warning-foreground: oklch(0.22 0.04 70);
-
-  --success: oklch(0.7 0.12 158);
-  --success-foreground: oklch(0.18 0.03 158);
-
-  --border: oklch(0.32 0.02 205);
-  --input: oklch(0.34 0.02 205);
-  --ring: oklch(0.74 0.11 190);
-
-  --chart-1: oklch(0.74 0.11 190);
-  --chart-2: oklch(0.66 0.17 25);
-  --chart-3: oklch(0.79 0.13 78);
-  --chart-4: oklch(0.7 0.12 158);
-  --chart-5: oklch(0.7 0.12 265);
-}
-
-/* Expose the variables to Tailwind as `bg-card`, `text-muted-foreground`, etc. */
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -144,55 +155,17 @@
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
 
-  --font-serif: 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, serif;
-}
-
-/*
- * Dark mode follows the operating system.
- *
- * This block is deliberately **outside** `@layer base`. Unlayered declarations
- * win over layered ones regardless of specificity, and the `:root` light
- * palette above is unlayered — so a copy of this inside `@layer base` loses to
- * it and dark mode silently never applies. The two have to sit in the same
- * layer for the later one to win.
- *
- * `:not(.light)` leaves room for an explicit override, and `.dark` above is the
- * matching hook for a future toggle. Neither needs JavaScript today, which is
- * what avoids a flash of the wrong palette before hydration.
- */
-@media (prefers-color-scheme: dark) {
-  :root:not(.light) {
-    color-scheme: dark;
-
-    --background: oklch(0.19 0.015 210);
-    --foreground: oklch(0.95 0.008 190);
-    --card: oklch(0.23 0.018 208);
-    --card-foreground: oklch(0.95 0.008 190);
-    --popover: oklch(0.23 0.018 208);
-    --popover-foreground: oklch(0.95 0.008 190);
-    --primary: oklch(0.74 0.11 190);
-    --primary-foreground: oklch(0.19 0.03 205);
-    --secondary: oklch(0.28 0.022 205);
-    --secondary-foreground: oklch(0.95 0.008 190);
-    --muted: oklch(0.27 0.02 205);
-    --muted-foreground: oklch(0.71 0.02 195);
-    --accent: oklch(0.32 0.035 195);
-    --accent-foreground: oklch(0.95 0.008 190);
-    --destructive: oklch(0.66 0.17 25);
-    --destructive-foreground: oklch(0.17 0.03 25);
-    --warning: oklch(0.79 0.13 78);
-    --warning-foreground: oklch(0.22 0.04 70);
-    --success: oklch(0.7 0.12 158);
-    --success-foreground: oklch(0.18 0.03 158);
-    --border: oklch(0.32 0.02 205);
-    --input: oklch(0.34 0.02 205);
-    --ring: oklch(0.74 0.11 190);
-    --chart-1: oklch(0.74 0.11 190);
-    --chart-2: oklch(0.66 0.17 25);
-    --chart-3: oklch(0.79 0.13 78);
-    --chart-4: oklch(0.7 0.12 158);
-    --chart-5: oklch(0.7 0.12 265);
-  }
+  /*
+   * The serif, from the library rather than from the system.
+   *
+   * This was a stack of system faces — Iowan Old Style, Palatino, Georgia — so
+   * the two Source Serif 4 woff2 files navigator-ux vendors were emitted under
+   * the mount, served, and then never asked for by anything on the page.
+   * `--nav-font-family` is the library's own stack and names them, so the
+   * bundle now reads in the face it ships, and headings match the navigator-ux
+   * components beside them.
+   */
+  --font-serif: var(--nav-font-family);
 }
 
 @layer base {
