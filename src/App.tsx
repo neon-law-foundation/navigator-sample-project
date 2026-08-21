@@ -7,12 +7,14 @@ import { useEffect, useState } from 'react'
 import { DiscoveryPage } from './DiscoveryPage'
 import { IntroductionPage } from './IntroductionPage'
 import { ResponsesPage } from './ResponsesPage'
+import { TrialPrepPage } from './TrialPrepPage'
 import { INTERROGATORIES, PROCEEDING } from './discovery'
 import { MATTER, MATTER_FACTS, NEXT_STEPS } from './matter'
 import { portalPath } from './mount'
 import { READY_KICKER } from './ready'
 import { DAYS_REMAINING, INBOUND, READINESS_COUNTS, RECEIVED } from './responses'
 import { SOUL_CLAIM } from './soulContract'
+import { AWAITING_WITNESS, DAYS_TO_DEPOSITION, PREP, PREP_CARDS } from './trialPrep'
 
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Badge } from '@/components/ui/badge'
@@ -33,7 +35,7 @@ import { cn } from '@/lib/utils'
  * behave differently gets edited instead of wrapped.
  */
 
-type View = 'overview' | 'introduction' | 'discovery' | 'interrogatories'
+type View = 'overview' | 'introduction' | 'discovery' | 'interrogatories' | 'trial-prep'
 
 /**
  * Routing by fragment, deliberately.
@@ -49,6 +51,7 @@ const VIEW_BY_HASH: Record<string, View> = {
   '#introduction': 'introduction',
   '#discovery': 'discovery',
   '#interrogatories': 'interrogatories',
+  '#trial-prep': 'trial-prep',
 }
 
 function viewFromHash(): View {
@@ -72,6 +75,7 @@ export function App() {
         {view === 'introduction' ? <IntroductionPage /> : null}
         {view === 'discovery' ? <DiscoveryPage /> : null}
         {view === 'interrogatories' ? <ResponsesPage /> : null}
+        {view === 'trial-prep' ? <TrialPrepPage /> : null}
         {view === 'overview' ? <Overview /> : null}
       </main>
 
@@ -99,6 +103,11 @@ function TopNav({ view }: { view: View }) {
       href: portalPath('#interrogatories'),
       current: view === 'interrogatories',
     },
+    {
+      label: 'Trial prep',
+      href: portalPath('#trial-prep'),
+      current: view === 'trial-prep',
+    },
   ]
 
   return (
@@ -112,7 +121,12 @@ function TopNav({ view }: { view: View }) {
             {MATTER.caption} — {MATTER.claim.toLowerCase()}
           </span>
         </div>
-        <nav aria-label="Portal sections" className="-mb-px flex gap-6">
+        {/*
+          * Five sections wrap rather than scroll: a tab strip that runs off the
+          * side of a phone hides the section a reader has not been told exists,
+          * and the current-page underline is what makes two rows legible.
+          */}
+        <nav aria-label="Portal sections" className="-mb-px flex flex-wrap gap-x-6 gap-y-1">
           {links.map((link) => (
             <a
               key={link.label}
@@ -254,6 +268,33 @@ function Overview() {
               <Button asChild>
                 <a href={portalPath('#interrogatories')}>
                   Review your draft responses <ArrowRight />
+                </a>
+              </Button>
+            </CardContent>
+          </Card>
+
+          <Card className="border-l-4 border-l-primary">
+            <CardHeader>
+              <div>
+                <CardTitle>Trial prep — {PREP_CARDS.length} flashcards</CardTitle>
+                <CardDescription>
+                  Deposition {PREP.deposition.label} · trial {PREP.trial.label}
+                </CardDescription>
+              </div>
+              <Badge variant={DAYS_TO_DEPOSITION > 30 ? 'outline' : 'warning'}>
+                {DAYS_TO_DEPOSITION} days
+              </Badge>
+            </CardHeader>
+            <CardContent className="space-y-4 text-[0.95rem] leading-relaxed">
+              <p>
+                The questions {PREP.examiner} is going to put to you, what each one is for, and how
+                to answer it without giving away ground. The answer stays hidden until you turn the
+                card over, so you can practice rather than read — and{' '}
+                {AWAITING_WITNESS.length} of them are answers only you can give.
+              </p>
+              <Button asChild>
+                <a href={portalPath('#trial-prep')}>
+                  Work through the deck <ArrowRight />
                 </a>
               </Button>
             </CardContent>

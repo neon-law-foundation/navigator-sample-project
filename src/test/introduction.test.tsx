@@ -233,6 +233,7 @@ describe('the count on the overview', () => {
       'Count II',
       'Discovery',
       'Interrogatories',
+      'Trial prep',
     ])
   })
 })
