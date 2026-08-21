@@ -6,10 +6,12 @@ import { useEffect, useState } from 'react'
 
 import { DiscoveryPage } from './DiscoveryPage'
 import { IntroductionPage } from './IntroductionPage'
+import { MotionPage } from './MotionPage'
 import { ResponsesPage } from './ResponsesPage'
 import { TrialPrepPage } from './TrialPrepPage'
 import { INTERROGATORIES, PROCEEDING } from './discovery'
 import { MATTER, MATTER_FACTS, NEXT_STEPS } from './matter'
+import { DAYS_TO_HEARING, MOTION, NARROWEST_MARGIN } from './motion'
 import { portalPath } from './mount'
 import { READY_KICKER } from './ready'
 import { DAYS_REMAINING, INBOUND, READINESS_COUNTS, RECEIVED } from './responses'
@@ -35,7 +37,7 @@ import { cn } from '@/lib/utils'
  * behave differently gets edited instead of wrapped.
  */
 
-type View = 'overview' | 'introduction' | 'discovery' | 'interrogatories' | 'trial-prep'
+type View = 'overview' | 'introduction' | 'discovery' | 'interrogatories' | 'trial-prep' | 'motion'
 
 /**
  * Routing by fragment, deliberately.
@@ -52,6 +54,7 @@ const VIEW_BY_HASH: Record<string, View> = {
   '#discovery': 'discovery',
   '#interrogatories': 'interrogatories',
   '#trial-prep': 'trial-prep',
+  '#motion': 'motion',
 }
 
 function viewFromHash(): View {
@@ -76,6 +79,7 @@ export function App() {
         {view === 'discovery' ? <DiscoveryPage /> : null}
         {view === 'interrogatories' ? <ResponsesPage /> : null}
         {view === 'trial-prep' ? <TrialPrepPage /> : null}
+        {view === 'motion' ? <MotionPage /> : null}
         {view === 'overview' ? <Overview /> : null}
       </main>
 
@@ -108,6 +112,7 @@ function TopNav({ view }: { view: View }) {
       href: portalPath('#trial-prep'),
       current: view === 'trial-prep',
     },
+    { label: 'Motion', href: portalPath('#motion'), current: view === 'motion' },
   ]
 
   return (
@@ -295,6 +300,32 @@ function Overview() {
               <Button asChild>
                 <a href={portalPath('#trial-prep')}>
                   Work through the deck <ArrowRight />
+                </a>
+              </Button>
+            </CardContent>
+          </Card>
+
+          <Card className="border-l-4 border-l-primary">
+            <CardHeader>
+              <div>
+                <CardTitle>Motion — partial summary judgment</CardTitle>
+                <CardDescription>
+                  Filed {MOTION.filed.label} · heard {MOTION.hearing.label}
+                </CardDescription>
+              </div>
+              <Badge variant="outline">{DAYS_TO_HEARING} days</Badge>
+            </CardHeader>
+            <CardContent className="space-y-4 text-[0.95rem] leading-relaxed">
+              <p>
+                We have asked the court to throw out Prine&apos;s argument that {SOUL_CLAIM.count}{' '}
+                was brought too late. It is a narrow motion and a strong one: on the least
+                favorable reading of the dates the claim was still filed with {NARROWEST_MARGIN}{' '}
+                days to spare. It does not ask about the part of the case that is genuinely in
+                dispute, and the page says why.
+              </p>
+              <Button asChild variant="outline">
+                <a href={portalPath('#motion')}>
+                  Read the motion <ArrowRight />
                 </a>
               </Button>
             </CardContent>
