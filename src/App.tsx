@@ -6,13 +6,16 @@ import { useEffect, useState } from 'react'
 
 import { DiscoveryPage } from './DiscoveryPage'
 import { IntroductionPage } from './IntroductionPage'
+import { ResponsesPage } from './ResponsesPage'
 import { INTERROGATORIES, PROCEEDING } from './discovery'
 import { MATTER, MATTER_FACTS, NEXT_STEPS } from './matter'
 import { portalPath } from './mount'
 import { READY_KICKER } from './ready'
+import { DAYS_REMAINING, INBOUND, READINESS_COUNTS, RECEIVED } from './responses'
 import { SOUL_CLAIM } from './soulContract'
 
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
+import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { cn } from '@/lib/utils'
@@ -30,7 +33,7 @@ import { cn } from '@/lib/utils'
  * behave differently gets edited instead of wrapped.
  */
 
-type View = 'overview' | 'introduction' | 'discovery'
+type View = 'overview' | 'introduction' | 'discovery' | 'interrogatories'
 
 /**
  * Routing by fragment, deliberately.
@@ -45,6 +48,7 @@ type View = 'overview' | 'introduction' | 'discovery'
 const VIEW_BY_HASH: Record<string, View> = {
   '#introduction': 'introduction',
   '#discovery': 'discovery',
+  '#interrogatories': 'interrogatories',
 }
 
 function viewFromHash(): View {
@@ -67,6 +71,7 @@ export function App() {
       <main className="mx-auto w-full max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
         {view === 'introduction' ? <IntroductionPage /> : null}
         {view === 'discovery' ? <DiscoveryPage /> : null}
+        {view === 'interrogatories' ? <ResponsesPage /> : null}
         {view === 'overview' ? <Overview /> : null}
       </main>
 
@@ -89,6 +94,11 @@ function TopNav({ view }: { view: View }) {
       current: view === 'introduction',
     },
     { label: 'Discovery', href: portalPath('#discovery'), current: view === 'discovery' },
+    {
+      label: 'Interrogatories',
+      href: portalPath('#interrogatories'),
+      current: view === 'interrogatories',
+    },
   ]
 
   return (
@@ -219,6 +229,31 @@ function Overview() {
               <Button asChild variant="outline">
                 <a href={portalPath('#discovery')}>
                   Read the interrogatories and responses <ArrowRight />
+                </a>
+              </Button>
+            </CardContent>
+          </Card>
+
+          <Card className="border-l-4 border-l-destructive">
+            <CardHeader>
+              <div>
+                <CardTitle>Interrogatories — {INBOUND.set}</CardTitle>
+                <CardDescription>
+                  Served on you {INBOUND.served.label} · responses due {INBOUND.due.label}
+                </CardDescription>
+              </div>
+              <Badge variant="destructive">{DAYS_REMAINING} days</Badge>
+            </CardHeader>
+            <CardContent className="space-y-4 text-[0.95rem] leading-relaxed">
+              <p>
+                The other side has now put {RECEIVED.length} written questions to you, and the
+                answers go back under your oath rather than ours. Drafts are written for{' '}
+                {RECEIVED.length - READINESS_COUNTS['needs-client']} of them;{' '}
+                {READINESS_COUNTS['needs-client']} are waiting on something only you can tell us.
+              </p>
+              <Button asChild>
+                <a href={portalPath('#interrogatories')}>
+                  Review your draft responses <ArrowRight />
                 </a>
               </Button>
             </CardContent>
