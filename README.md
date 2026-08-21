@@ -122,6 +122,13 @@ fifth:
 http://localhost:5173/app/projects/sample-litigation/portal/#trial-prep
 ```
 
+The motion for partial summary judgment — the matter's first court filing, and the one document
+here set on pleading paper — is the sixth:
+
+```text
+http://localhost:5173/app/projects/sample-litigation/portal/#motion
+```
+
 ## Develop
 
 ```bash
@@ -148,6 +155,7 @@ whatever the URL serves that day.
 | `pnpm check` | lint, typecheck, build, test, in that order. |
 | `pnpm validate:templates` | `navigator validate templates` — the notation rule set, over `templates/`. |
 | `pnpm render:documents` | Re-render each notation template to `public/documents/`. Needs the Navigator CLI. |
+| `pnpm render:pleadings` | Re-compile each Typst pleading to `public/documents/`. Needs `typst`, and nothing else. |
 
 Navigator builds this repository the same way. `navigator dev sample-project` clones it into a temporary
 directory, runs `pnpm install --frozen-lockfile` and `pnpm build`, and stages the resulting `dist/` under
@@ -165,6 +173,7 @@ src/IntroductionPage.tsx    Count II — eight tabs
 src/DiscoveryPage.tsx       the interrogatories and the responses, split by who signed them
 src/ResponsesPage.tsx       the set served on us, and the drafts waiting to be sworn
 src/TrialPrepPage.tsx       the flashcard deck, and the simulated cross-examination
+src/MotionPage.tsx          the motion: the limitations arithmetic, and what it does not ask for
 src/RelationshipGraph.tsx   the force-directed party/evidence web
 src/PdfViewer.tsx           the document viewer: canvas, text layer, find bar
 src/pdf.ts                  the pdf.js seam — worker wiring, opening, text extraction
@@ -181,9 +190,13 @@ src/discovery.ts            the interrogatory exchange, and the rules it is meas
 src/responses.ts            the set served on us, the drafts under it, and the derived deadline
 src/trialPrep.ts            the prep cards, the ground rules, and the mock examination
 src/documents.ts            the rendered PDFs and the templates behind them
+src/motion.ts               the motion, and the limitations arithmetic it derives rather than states
 src/mount.ts                links derived from the base rather than written out
-templates/neon_law/*.md     notation templates; the source of the PDFs
+templates/neon_law/*.md     notation templates; the source of three of the PDFs
+pleadings/pleading-paper.typ the 28-line grid, the rules, and the caption box
+pleadings/*.typ             Typst pleadings; the source of the fourth PDF
 scripts/render-documents.sh `navigator template render`, once per template
+scripts/render-pleadings.sh `typst compile`, once per pleading
 ```
 
 ### Styling
@@ -208,10 +221,14 @@ make it the only thing in the app that ignores the theme.
 
 ### Documents
 
-The PDFs under `public/documents/` are not hand-authored. Each is rendered by `navigator template render` from
-a notation template in `templates/neon_law/` — Markdown carrying a questionnaire and a workflow in its
-frontmatter. The renderer validates against the same rule set as `navigator validate` and refuses a template
-with any violation, so a PDF that exists is a template that passed.
+No PDF under `public/documents/` is hand-authored, and there are two renderers rather than one. Three of the
+four are rendered by `navigator template render` from a notation template in `templates/neon_law/`; the fourth
+is the motion, compiled from Typst, and *The motion is typeset, not templated* below is why it is not a
+notation template like the others.
+
+The notation ones come from Markdown carrying a questionnaire and a workflow in its frontmatter. The renderer
+validates against the same rule set as `navigator validate` and refuses a template with any violation, so a PDF
+that exists is a template that passed.
 
 There are three: the engagement letter that opens the representation, the notice of rescission served on the
 defendant, and the affidavit of the witness whose notebook the count turns on. The engagement letter is the one
@@ -222,7 +239,7 @@ letting the component guess from the title.
 
 They are **committed rather than generated during `vite build`**: this bundle has to build on a machine that
 has never installed the Navigator CLI, and CI should not need a Rust toolchain to ship a React app. Re-run
-`pnpm render:documents` whenever a template changes. `src/test/bundle.test.ts` asserts all three PDFs reach
+`pnpm render:documents` whenever a template changes. `src/test/bundle.test.ts` asserts all four PDFs reach
 `dist/`, since nothing in the Vite build would notice them going missing.
 
 `pnpm validate:templates` is the check that keeps the templates renderable, and for the same reason it is
@@ -382,6 +399,85 @@ is actually about; a deck that modelled a helpful lie would be a different docum
 different name. `MOCK_CROSS` puts the same material in a run — three agreeable questions and then
 the one they were for — so a client can feel the shape of an examination rather than meet each
 question in isolation.
+
+### The motion is typeset, not templated
+
+`#motion` is the matter's first court filing, and the only document here that is **not** a notation
+template. It is Typst source in `pleadings/`, compiled by `pnpm render:pleadings`, and the reason is
+pleading paper.
+
+Pleading paper is a typesetting problem before it is a drafting one: 28 numbered lines down the left
+margin, a double rule beside them, a single rule at the right, and body text whose every baseline has
+to land on one of the 28 numbers — on every page, through every heading, and across a caption box.
+A notation template cannot ask for that. It declares a **render profile** in its frontmatter — `output:
+letter` or the default plain page — and the renderer owns the furniture from there. That is the right
+trade for a letter or an affidavit and the wrong one here, and inventing a `pleading` profile in this
+repository would be inventing it in the wrong repository, because the profiles are Navigator's.
+
+So the split is by tool, and `scripts/render-pleadings.sh` is separate from `scripts/render-documents.sh`
+for the same reason: that one needs the Navigator CLI and a Rust toolchain, this one needs `typst` and
+nothing else. A contributor who edits the motion does not have to install Navigator to re-render it.
+Both outputs are committed rather than built by Vite, and `src/test/bundle.test.ts` asserts the motion
+reaches `dist/` separately from the three notation PDFs — nothing in `vite build` knows Typst exists,
+so nothing in `vite build` would notice it going missing.
+
+`pleadings/` is a top-level directory rather than `templates/typst/` because `pnpm validate:templates`
+runs `navigator validate templates` over the whole of `templates/`, and a `.typ` file in there is a
+file the notation rule set has an opinion about and should not.
+
+Three things about `pleadings/pleading-paper.typ`:
+
+- **One constant drives everything.** `LINE` is the baseline-to-baseline distance, and every vertical
+  measurement in the file is a whole multiple of it. The numbers are placed on an absolute grid in the
+  page background and the text is laid out on the same grid in the flow, so the two cannot drift apart:
+  neither is measured from the other.
+- **The line box is pinned, not measured.** `top-edge` and `bottom-edge` are absolute, which makes the
+  box exactly one font size tall whatever glyphs are on the line. Left at Typst's default the box is
+  measured from the tallest glyph actually present, so a line with no ascenders would be shorter than
+  its neighbours and every line after it would sit slightly wrong.
+- **Fixed-height blocks take different spacing from text blocks.** A block Typst measures from its own
+  text costs `spacing + SIZE` between the baselines either side of it; a block given an explicit height
+  costs `spacing` exactly. The caption box is the second kind, which is why its gaps are multiples of
+  `LINE` while everything else uses `NEXT` and `SKIP`. Getting that wrong puts every line after the
+  caption half a line off its number, on every page.
+
+The typeface is Typst's bundled Libertinus Serif rather than a system font, because a committed PDF
+that renders differently on the next contributor's machine is a committed PDF nobody can review.
+
+### The motion argues arithmetic, and the module checks it
+
+`src/motion.ts` is the one data module whose subject is a *calculation*, and it is written that way on
+purpose.
+
+The motion is aimed at the statute of limitations defense and at nothing else. NRS 11.190(3)(d) gives
+three years; Count II was filed sixteen months after the earliest date any theory can start the clock;
+so the defense fails on every accrual date the record supports and the court never has to choose
+between them. That is a subtraction, so `ACCRUAL_CANDIDATES` derives each expiry and each margin from
+the dates rather than carrying them, and **the guard at the foot of the module throws at import if any
+candidate's three years had already run** when Count II was filed. A motion whose own premise is false
+is a page that renders perfectly while being wrong, which is the failure mode worth a guard.
+
+Two more things worth knowing before editing it:
+
+- **The motion is narrow because the interesting fact is disputed.** What Dermot knew on 14 April 2026
+  is the fact the whole count turns on, and it is contested — so a motion built on it would be a motion
+  that has to lose. Part IV.C of the PDF declines to move on ratification, on the record, and says why;
+  `RESERVED` is that decision as data, and `MotionPage` renders it beside the relief sought rather than
+  in a footnote. A client who reads a granted motion as the end of the case has been misled by the
+  layout, which is the same failure the draft labels on the interrogatories page exist to prevent.
+- **The authorities are reused, not re-quoted.** `SUBSTANTIVE_AUTHORITIES` selects from the verified
+  entries in `research.ts` by id, the same way `responses.ts` selects its rule quotes from
+  `discovery.ts`. The two procedural authorities live in `motion.ts` because `research.ts` is scoped to
+  the three substantive issues in Count II and the summary judgment standard is none of them — widening
+  its `issue` union to admit a rule of procedure would make the research tab claim to answer a question
+  it does not ask. They carry the same `verified` promise: the NRCP 56 quotes are the rule's own words,
+  and the two sentences from *Wood v. Safeway* were checked against the opinion text before they were
+  written down.
+
+`src/motion.ts` also carries the matter's first docket number, because nothing before it needed one — a
+notation template renders a letter or an affidavit and neither has a caption. It is invented, like the
+rest of the matter and for the same reason the adverse firm is: a real Clark County docket number
+belongs to a real case.
 
 ### There is no session code here
 

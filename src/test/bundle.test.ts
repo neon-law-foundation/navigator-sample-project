@@ -100,6 +100,15 @@ describe('the built bundle', () => {
     expect(names).toContain('affidavit-odile-cruller.pdf')
   })
 
+  it('ships the Typst pleading', () => {
+    // Same reasoning, different renderer. `pnpm render:pleadings` produces this
+    // one from `pleadings/motion-summary-judgment.typ`, and it is committed for
+    // the same reason the notation PDFs are: nothing in `vite build` knows Typst
+    // exists, so nothing in `vite build` would notice this file going missing.
+    const names = Object.keys(pdfs).map((path) => path.split('/').pop())
+    expect(names, BUILD_FIRST).toContain('motion-for-summary-judgment.pdf')
+  })
+
   it('ships the pdf.js worker, and reaches it from the mount', () => {
     // The viewer's most silent failure: with no resolvable worker, pdf.js
     // reaches for a CDN, the portal CSP blocks it, and the reader gets a
