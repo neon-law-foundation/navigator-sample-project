@@ -115,6 +115,13 @@ fourth section in the strip:
 http://localhost:5173/app/projects/sample-litigation/portal/#interrogatories
 ```
 
+The witness preparation deck — the flashcards the client studies before he is deposed — is the
+fifth:
+
+```text
+http://localhost:5173/app/projects/sample-litigation/portal/#trial-prep
+```
+
 ## Develop
 
 ```bash
@@ -157,6 +164,7 @@ src/App.tsx                 the shell, the fragment router, and the overview
 src/IntroductionPage.tsx    Count II — eight tabs
 src/DiscoveryPage.tsx       the interrogatories and the responses, split by who signed them
 src/ResponsesPage.tsx       the set served on us, and the drafts waiting to be sworn
+src/TrialPrepPage.tsx       the flashcard deck, and the simulated cross-examination
 src/RelationshipGraph.tsx   the force-directed party/evidence web
 src/PdfViewer.tsx           the document viewer: canvas, text layer, find bar
 src/pdf.ts                  the pdf.js seam — worker wiring, opening, text extraction
@@ -171,6 +179,7 @@ src/glossary.ts             Navigator's vocabulary, scoped to this bundle
 src/research.ts             the authorities — real law, verified before it was written down
 src/discovery.ts            the interrogatory exchange, and the rules it is measured against
 src/responses.ts            the set served on us, the drafts under it, and the derived deadline
+src/trialPrep.ts            the prep cards, the ground rules, and the mock examination
 src/documents.ts            the rendered PDFs and the templates behind them
 src/mount.ts                links derived from the base rather than written out
 templates/neon_law/*.md     notation templates; the source of the PDFs
@@ -339,6 +348,40 @@ kind of consistency it says so, in a `consistency` field the page renders beside
 response in the set is an objection and nothing else, because every word of the answer would be
 privileged; that is the line NRCP 33(b)(3) draws, and it is the line their Interrogatory 3 fell on
 the wrong side of.
+
+### The prep deck hides its own answers
+
+`#trial-prep` is the third document in the discovery sequence and the only one that never gets
+served: the flashcards the client studies before he is deposed. It is written as cards rather than
+as a memo because of a difference that is behavioral rather than cosmetic — **the answer side is
+not rendered until the reader turns the card over.** Not hidden with CSS: absent. A visually
+hidden answer is still one the eye catches, a screen reader announces, and a find-in-page lands
+on, and any of those turns a rehearsal back into a document the client reads once and believes he
+has practiced. `src/test/trial-prep.test.tsx` asserts the absence in both directions, because it
+is exactly the property a well-meaning redesign removes first.
+
+Three things about `src/trialPrep.ts`:
+
+- **A card that claims record support has to point at the record.** Every `anchor` names an
+  interrogatory in `discovery.ts` or `responses.ts` by id, and the guard at the foot of the module
+  throws at import if it names one that does not exist. A prep deck that drifts from the sworn
+  record is worse than no deck — it rehearses a witness into contradicting himself, and it looks
+  exactly like a deck that works while doing it.
+- **The most important answer is reused, not retyped.** The card on the second bite reads its
+  answer out of the drafted interrogatory response rather than keeping a copy, for the same reason
+  `responses.ts` selects its rule quotes from `discovery.ts` by id. The examiner will be holding
+  the sworn version, and any daylight between the two is his best question of the day.
+- **Two cards have no answer at all, deliberately.** The date the client learned of the term is the
+  fact the whole count turns on, and it is not ours to draft. Those cards say so on their face and
+  the page collects them into what the client has to bring to the session — the same shape as the
+  outstanding-work list on the interrogatories page, and the same reason for it.
+
+The `weak` field on a card is the other half of the teaching. It holds an answer that is **true and
+still costs ground**, with the reason it costs ground, because that is the distinction witness prep
+is actually about; a deck that modelled a helpful lie would be a different document with a
+different name. `MOCK_CROSS` puts the same material in a run — three agreeable questions and then
+the one they were for — so a client can feel the shape of an examination rather than meet each
+question in isolation.
 
 ### There is no session code here
 

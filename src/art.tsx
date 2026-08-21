@@ -217,3 +217,227 @@ export function Doughnut({ state = 'whole', size = 200 }: { state?: BiteState; s
     </svg>
   )
 }
+
+/**
+ * The examination, as a room.
+ *
+ * The witness keeps the round, plain silhouette the plaintiff has in
+ * `HedgeScene`, and the examiner keeps the defendant's warm one, so a reader
+ * who has seen the hedge already knows who is who before reading a caption. The
+ * ids in `defs` are prefixed because both scenes can render in one document and
+ * an SVG id is global to the page — two `#glow`s and the second one wins.
+ */
+export function CrossExaminationScene() {
+  return (
+    <svg
+      viewBox="0 0 800 280"
+      width="100%"
+      aria-hidden="true"
+      style={{ display: 'block', borderRadius: 'var(--radius)' }}
+    >
+      <defs>
+        <linearGradient id="prep-room" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%" stopColor="var(--muted)" />
+          <stop offset="60%" stopColor="var(--background)" />
+          <stop offset="100%" stopColor="color-mix(in oklch, var(--art-warm) 12%, var(--background))" />
+        </linearGradient>
+      </defs>
+
+      <rect width="800" height="280" fill="url(#prep-room)" />
+
+      {/* The rail. Everything in the room is arranged against this line. */}
+      <rect y="236" width="800" height="4" fill="var(--foreground)" opacity="0.14" />
+
+      {/* The witness box, and the witness in it. */}
+      <g>
+        <g fill="var(--foreground)" opacity="0.86">
+          <circle cx="196" cy="94" r="34" />
+          <path d="M162 236 v-84 a34 34 0 0 1 68 0 v84 z" />
+        </g>
+        <rect x="118" y="168" width="156" height="68" rx="4" fill="var(--card)" stroke="var(--foreground)" strokeWidth="3" />
+        <rect x="118" y="168" width="156" height="10" rx="4" fill="var(--foreground)" opacity="0.16" />
+      </g>
+
+      {/* The examiner, at the lectern, mid-question. */}
+      <g fill="var(--art-warm)">
+        <circle cx="612" cy="86" r="32" />
+        <path d="M580 236 v-96 a32 32 0 0 1 64 0 v96 z" />
+        {/* The pointing arm, which is what a cross-examination looks like from the box. */}
+        <path
+          d="M584 156 q-58 -10 -104 -6"
+          stroke="var(--art-warm)"
+          strokeWidth="13"
+          strokeLinecap="round"
+          fill="none"
+        />
+      </g>
+      <path d="M648 236 v-58 h84 l14 58 z" fill="var(--card)" stroke="var(--art-warm)" strokeWidth="3" />
+
+      {/* Three questions on the way over, the nearest one loudest. */}
+      <g
+        fill="var(--art-warm)"
+        fontFamily="ui-serif, Georgia, serif"
+        fontWeight="700"
+        textAnchor="middle"
+      >
+        <text x="470" y="120" fontSize="46" opacity="0.85">?</text>
+        <text x="404" y="98" fontSize="34" opacity="0.55">?</text>
+        <text x="350" y="82" fontSize="24" opacity="0.3">?</text>
+      </g>
+
+      {/* The transcript, which is the only thing that leaves the room. */}
+      <g opacity="0.5">
+        <rect x="300" y="196" width="196" height="40" rx="3" fill="var(--card)" stroke="var(--foreground)" strokeWidth="2" />
+        {[0, 1, 2].map((line) => (
+          <rect
+            key={line}
+            x="312"
+            y={206 + line * 9}
+            width={line === 2 ? 104 : 172}
+            height="4"
+            rx="2"
+            fill="var(--foreground)"
+            opacity="0.35"
+          />
+        ))}
+      </g>
+    </svg>
+  )
+}
+
+/**
+ * A small drawing per topic, for the face of a card.
+ *
+ * These are marks rather than pictures: at 64 pixels a scene is mud, so each is
+ * three or four shapes that read at a glance and carry the same warm/cool pair
+ * as everything else in this file. They are `aria-hidden` because the topic is
+ * always written beside them — a card whose subject is legible only as a
+ * drawing is a card a screen reader cannot sort.
+ */
+export type Vignette =
+  | 'formation'
+  | 'aspect'
+  | 'concealment'
+  | 'knowledge'
+  | 'ratification'
+  | 'records'
+  | 'damages'
+
+function VignetteBody({ topic }: { topic: Vignette }) {
+  switch (topic) {
+    case 'formation':
+      // The offer over the hedge: a ring changing hands above the greenery.
+      return (
+        <>
+          <circle cx="50" cy="34" r="17" fill="none" stroke="var(--art-dough)" strokeWidth="9" />
+          <rect x="6" y="60" width="88" height="28" rx="6" fill="var(--art-figure)" opacity="0.9" />
+          <circle cx="22" cy="60" r="12" fill="var(--art-figure)" opacity="0.9" />
+          <circle cx="50" cy="60" r="12" fill="var(--art-figure)" opacity="0.9" />
+          <circle cx="78" cy="60" r="12" fill="var(--art-figure)" opacity="0.9" />
+        </>
+      )
+    case 'aspect':
+      // The horned aspect, denied under oath — and the sweater he says he wore.
+      return (
+        <>
+          <path d="M32 30 q-10 -18 -1 -30 q9 10 15 22 z" fill="var(--art-warm)" />
+          <path d="M68 30 q10 -18 1 -30 q-9 10 -15 22 z" fill="var(--art-warm)" />
+          <circle cx="50" cy="38" r="20" fill="var(--art-warm)" />
+          <path d="M24 92 v-24 a26 26 0 0 1 52 0 v24 z" fill="var(--art-warm)" opacity="0.5" />
+        </>
+      )
+    case 'concealment':
+      // The term, under the glaze: readable here because we are reading the pleading.
+      return (
+        <>
+          <circle cx="50" cy="50" r="34" fill="var(--art-dough)" opacity="0.55" />
+          <circle cx="50" cy="50" r="34" fill="none" stroke="var(--foreground)" strokeWidth="2.5" />
+          <circle cx="50" cy="50" r="13" fill="var(--card)" stroke="var(--foreground)" strokeWidth="2.5" />
+          <text
+            x="50"
+            y="50"
+            dy="0.35em"
+            textAnchor="middle"
+            fontSize="17"
+            fontFamily="ui-monospace, SFMono-Regular, Menlo, monospace"
+            fontWeight="700"
+            fill="var(--art-warm)"
+          >
+            §
+          </text>
+        </>
+      )
+    case 'knowledge':
+      // One day on a calendar, which in this count is the whole case.
+      return (
+        <>
+          <rect x="14" y="20" width="72" height="66" rx="6" fill="var(--card)" stroke="var(--foreground)" strokeWidth="2.5" />
+          <rect x="14" y="20" width="72" height="16" rx="6" fill="var(--art-cool)" />
+          <rect x="30" y="12" width="6" height="16" rx="3" fill="var(--foreground)" />
+          <rect x="64" y="12" width="6" height="16" rx="3" fill="var(--foreground)" />
+          <circle cx="50" cy="62" r="15" fill="var(--art-warm)" opacity="0.85" />
+        </>
+      )
+    case 'ratification':
+      // The year in the refrigerator: a ring with a bite gone, and the gap drawn round it.
+      return (
+        <>
+          <path
+            d="M50 12 a38 38 0 1 1 -26 66"
+            fill="none"
+            stroke="var(--art-cool)"
+            strokeWidth="4"
+            strokeLinecap="round"
+            strokeDasharray="7 7"
+          />
+          <circle cx="50" cy="52" r="24" fill="var(--art-dough)" opacity="0.6" />
+          <circle cx="50" cy="52" r="24" fill="none" stroke="var(--foreground)" strokeWidth="2.5" />
+          <circle cx="50" cy="52" r="9" fill="var(--card)" stroke="var(--foreground)" strokeWidth="2.5" />
+          <circle cx="70" cy="34" r="13" fill="var(--background)" />
+        </>
+      )
+    case 'records':
+      // Odile's notebook, dated and not to be tidied.
+      return (
+        <>
+          <rect x="22" y="14" width="60" height="74" rx="4" fill="var(--card)" stroke="var(--foreground)" strokeWidth="2.5" />
+          <rect x="22" y="14" width="10" height="74" fill="var(--art-cool)" opacity="0.7" />
+          {[0, 1, 2, 3].map((line) => (
+            <rect
+              key={line}
+              x="40"
+              y={30 + line * 14}
+              width={line === 3 ? 22 : 32}
+              height="4"
+              rx="2"
+              fill="var(--foreground)"
+              opacity="0.45"
+            />
+          ))}
+          {[0, 1, 2].map((ring) => (
+            <circle key={ring} cx="27" cy={30 + ring * 22} r="3.5" fill="var(--background)" stroke="var(--foreground)" strokeWidth="1.5" />
+          ))}
+        </>
+      )
+    case 'damages':
+      // The relief actually sought: a balance, with nothing in either pan.
+      return (
+        <>
+          <rect x="47" y="20" width="6" height="62" rx="3" fill="var(--foreground)" opacity="0.8" />
+          <rect x="18" y="26" width="64" height="5" rx="2.5" fill="var(--foreground)" opacity="0.8" />
+          <rect x="30" y="82" width="40" height="6" rx="3" fill="var(--foreground)" opacity="0.8" />
+          <path d="M12 34 h24 l-12 20 z" fill="var(--art-cool)" opacity="0.8" />
+          <path d="M64 34 h24 l-12 20 z" fill="var(--art-warm)" opacity="0.8" />
+        </>
+      )
+  }
+}
+
+/** One vignette, sized by the caller. `size` is both dimensions — they are square. */
+export function TopicVignette({ topic, size = 64 }: { topic: Vignette; size?: number }) {
+  return (
+    <svg viewBox="0 0 100 100" width={size} height={size} aria-hidden="true" style={{ display: 'block' }}>
+      <VignetteBody topic={topic} />
+    </svg>
+  )
+}
