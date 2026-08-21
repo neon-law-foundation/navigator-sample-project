@@ -94,12 +94,6 @@ The PDF viewer is on the documents tab, which this link opens directly:
 http://localhost:5173/app/projects/sample-litigation/portal/#introduction
 ```
 
-The discovery exchange is its own view, and needs no tab:
-
-```text
-http://localhost:5173/app/projects/sample-litigation/portal/#discovery
-```
-
 Pick **Documents** from the tab strip on that page. The first document opens in the viewer on arrival; the
 cards beside it switch which one is open, and the toolbar carries page navigation, zoom, fit-to-width, and
 find-in-document.
@@ -107,6 +101,19 @@ find-in-document.
 One thing worth knowing if the page looks stuck: pdf.js advances its render on `requestAnimationFrame`, which
 browsers do not fire in a hidden or background tab. A viewer left in a background tab shows a blank page until
 the tab is brought to the front, and then paints. That is pdf.js's behavior rather than this component's.
+
+The discovery exchange is its own view, and needs no tab:
+
+```text
+http://localhost:5173/app/projects/sample-litigation/portal/#discovery
+```
+
+The interrogatories served *on* the client, and the responses being drafted for them, are the
+fourth section in the strip:
+
+```text
+http://localhost:5173/app/projects/sample-litigation/portal/#interrogatories
+```
 
 ## Develop
 
@@ -149,6 +156,7 @@ src/index.css               Tailwind, plus the theme every component reads, alia
 src/App.tsx                 the shell, the fragment router, and the overview
 src/IntroductionPage.tsx    Count II — eight tabs
 src/DiscoveryPage.tsx       the interrogatories and the responses, split by who signed them
+src/ResponsesPage.tsx       the set served on us, and the drafts waiting to be sworn
 src/RelationshipGraph.tsx   the force-directed party/evidence web
 src/PdfViewer.tsx           the document viewer: canvas, text layer, find bar
 src/pdf.ts                  the pdf.js seam — worker wiring, opening, text extraction
@@ -162,6 +170,7 @@ src/people.ts               who may read the matter, and who the matter is about
 src/glossary.ts             Navigator's vocabulary, scoped to this bundle
 src/research.ts             the authorities — real law, verified before it was written down
 src/discovery.ts            the interrogatory exchange, and the rules it is measured against
+src/responses.ts            the set served on us, the drafts under it, and the derived deadline
 src/documents.ts            the rendered PDFs and the templates behind them
 src/mount.ts                links derived from the base rather than written out
 templates/neon_law/*.md     notation templates; the source of the PDFs
@@ -296,6 +305,40 @@ soul-conveyance dispute is a sample matter with a problem.
 `src/discovery.ts` checks its own story at import: a duplicated number, an answer filed under a response that
 claims to be objection-only, or an objection citing a rule the module does not carry all throw where a test
 sees them. Each of those renders perfectly well while being wrong, which is the failure mode worth a guard.
+
+### Nothing on the interrogatories tab has been served
+
+`#interrogatories` is the other direction of the same fight: Defendant's first set to Dermot
+Cruller, and the responses being drafted for it. It is a separate view from `#discovery` because it
+renders a document at a different point in its life. Theirs is finished — served, answered, signed —
+and the only open question is whether it is sufficient. Ours is not. Nothing on that page has been
+served, and no answer on it is sworn until the client swears to it, so every draft block is labeled
+as a draft on its face rather than in a footnote. A client who reads a draft answer as a filed one
+has been misled by us, which is the same failure the two-voices layout on the discovery page exists
+to prevent.
+
+Three things about `src/responses.ts` are worth knowing before editing it:
+
+- **The deadline is derived, not written down.** NRCP 33(b)(2) gives thirty days from service, and
+  thirty days from the fixture's date of service lands on a Sunday — so the date the page prints is
+  a Monday that appears nowhere in the data. Changing the date of service moves it. All the date
+  arithmetic is in UTC, because a local-midnight `Date` puts the deadline on a different day west of
+  Greenwich than east of it.
+- **"Now" is fixture data too.** "25 days left" is counted from a fixed `asOf` date the page names,
+  not from `new Date()`. A live clock would make the number true for one day, and would make every
+  test that reads it depend on when it ran.
+- **The rules are reused rather than re-quoted.** `RESPONSE_RULES` selects from the verbatim quotes
+  in `discovery.ts` by id. `Rule.verified` promises the quote came from the rule's text rather than
+  from memory, and a second transcription of the same sentence in a second file is a second chance
+  to break that promise.
+
+The drafts also have to square with the positions the other page is pressing. We are moving to
+compel on their Interrogatory 3 because a contention question drew an objection and nothing else, so
+the contention questions here get answered rather than deflected — and where a draft turns on that
+kind of consistency it says so, in a `consistency` field the page renders beside the draft. One
+response in the set is an objection and nothing else, because every word of the answer would be
+privileged; that is the line NRCP 33(b)(3) draws, and it is the line their Interrogatory 3 fell on
+the wrong side of.
 
 ### There is no session code here
 

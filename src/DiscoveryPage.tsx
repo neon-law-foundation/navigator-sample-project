@@ -49,6 +49,7 @@ const TOPIC_LABEL: Record<Topic, string> = {
   knowledge: 'Knowledge',
   ratification: 'The year after',
   records: 'Documents',
+  damages: 'Relief',
 }
 
 /**

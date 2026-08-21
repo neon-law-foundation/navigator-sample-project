@@ -204,8 +204,22 @@ export type ResponseKind =
 /** Our read on whether the response discharged the obligation. */
 export type Sufficiency = 'sufficient' | 'partial' | 'deficient'
 
-/** Which issue in the case an interrogatory is aimed at. */
-export type Topic = 'formation' | 'aspect' | 'concealment' | 'knowledge' | 'ratification' | 'records'
+/**
+ * Which issue in the case an interrogatory is aimed at.
+ *
+ * One vocabulary, shared by both directions of the exchange: `responses.ts`
+ * labels the set served *on* us from this same union, so a topic means the same
+ * thing on both pages. `damages` appears only there, because a defendant asks
+ * what the plaintiff wants and a plaintiff has no occasion to ask it back.
+ */
+export type Topic =
+  | 'formation'
+  | 'aspect'
+  | 'concealment'
+  | 'knowledge'
+  | 'ratification'
+  | 'records'
+  | 'damages'
 
 /** One ground of objection, as counsel stated it. */
 export interface Objection {
